@@ -1,0 +1,188 @@
+.carousel {
+    position: relative;
+    width: 100%;
+
+
+    .slide {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #FD8B92;
+        border-radius: 12px;
+        padding: 20px 40px;
+        height: 578px;
+        overflow: visible;
+
+        opacity: 0;
+        visibility: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+
+        &.active {
+            opacity: 1;
+            width: 89%;
+            visibility: visible;
+            margin: 0 auto;
+            position: relative;
+
+        }
+
+        &__btn--prev,
+        &__btn--next {
+            font-size: 28px;
+            font-weight: 400;
+            line-height: 150%;
+            transform: scaleY(1.8);
+            display: inline-block;
+            transform-origin: center;
+            color: var(--border);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        &__btn--next {
+            position: absolute;
+            right: 2rem;
+        }
+
+        &__btn--prev {
+            position: absolute;
+            left: 2rem;
+        }
+
+        &__left {
+            width: 60%;
+            height: 107%;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            z-index: 2;
+
+            .slide__bg__text {
+                position: absolute;
+                bottom: -155px;
+                left: -50px;
+                font-size: 400px;
+                font-weight: 900;
+                color: rgba(255, 255, 255, 0.08);
+                z-index: 0;
+                pointer-events: none;
+            }
+
+            .slide__image {
+                height: 137%;
+                width: auto;
+                object-fit: contain;
+                margin-left: -110px;
+                position: relative;
+            }
+        }
+
+        &__right {
+            width: 40%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            z-index: 2;
+            color: #fff;
+
+            .slide__title {
+                font-size: 58px;
+                font-weight: 500;
+                margin-bottom: 12px;
+                line-height: 1.2;
+            }
+
+            .slide__desc {
+                font-size: 24px;
+                margin-bottom: 24px;
+                color: var(--white);
+                max-width: 80%;
+                line-height: 100%;
+            }
+
+            .slide__explore-btn {
+                background-color: #ffffff;
+                color: #fd8b92;
+                font-size: 28px;
+                font-weight: 700;
+                padding: 16px 36px;
+                border: none;
+                border-radius: 0;
+                width: 219px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+
+                &:hover {
+                    background-color: #ffe5e7;
+                }
+            }
+
+            /* Mini carousel */
+            .slide__mini-carousel {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-top: 20px;
+                gap: 15px;
+
+                .mini-track {
+                    display: flex;
+                    gap: 50px;
+                }
+
+                .mini-card {
+                    width: 85px;
+                    height: 85px;
+                    background: var(--white);
+                    border-radius: 12px;
+                    padding: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+                    transition: transform 0.2s ease;
+
+                    &:hover {
+                        transform: scale(1.05);
+                    }
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: contain;
+                        transform: scale(1.7);
+                    }
+                }
+
+                .mini-dots {
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 8px;
+
+                    .dot {
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 50%;
+                        background: var(--white);
+                        margin: 0 4px;
+                        cursor: pointer;
+                        transition: background 0.3s ease;
+
+                        &.active {
+                            width: 20px;
+                            border-radius: 12px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

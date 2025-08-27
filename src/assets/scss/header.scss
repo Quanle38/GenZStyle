@@ -1,0 +1,50 @@
+.Layout__Header{
+    &--logo{
+        width: 33.33%;
+        .title{
+            font-weight: 800;
+            font-size: 28px;
+            transform: scaleY(0.9);
+            display: inline-block;
+            transform-origin : center;
+        }
+    }
+    &--nav{
+         width: 33.33%;
+         display: flex;
+         justify-content: center;
+         gap: 24px;
+         .link{
+            font-weight: 450;
+            font-size: larger;
+            font-size: 20px;
+            color: var(--black);
+            position: relative;
+            z-index: 2;
+            width: 80px;
+            transition: font-weight 0.2s ease-in-out;
+           &:hover{
+            font-weight: 700;
+            color: var(--black);
+            width: 80px;
+           }
+         }
+    }
+    &--icon{
+        display: flex;
+        justify-content: flex-end;
+         width: 33.33%;
+         gap : 39px;
+         .icon{
+            font-size: 22px;
+            color: var(--black);
+            position: relative;
+            z-index:2;
+            transition: ease-in-out 0.2;
+             &:hover{
+            color: var(--black);
+            scale: 1.2;
+            }
+        }
+    }
+}

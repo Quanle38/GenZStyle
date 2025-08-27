@@ -1,0 +1,65 @@
+.Hero{
+    position: relative;
+    padding-left: 86px;
+    height: 711px;
+    display: flex;
+    flex-direction: column;
+    gap: 39px;
+    justify-content: end;
+    margin-bottom: 25px;
+    padding-bottom: 100px;
+
+    &__title{
+        font-size: 75px;
+        font-weight: 600;
+        width: 354px;
+        line-height: 112%;
+
+    }
+    &__des{
+        font-size: 25px;
+        width: 442px;
+        text-transform: capitalize;
+        color: var(--description);
+        line-height: 154%;
+    }
+    &__btn {
+        position: relative;
+        z-index: 1;
+        width: 215px;
+        height: 80px;
+        background-color: var(--black);
+        color: var(--white);
+        font-size: 28px;
+        font-weight: 600;
+        text-align: center;
+        line-height: 100%;
+        &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -62px; 
+        height: 70px; 
+        background: linear-gradient(
+            to bottom,
+            var(--btnShadown-up),
+            var(--btnShadown-down)
+        );
+        filter: blur(8px);
+        z-index: -1;
+        }
+    }
+     .brand{
+        height: 162px;
+        width: 100%;
+        background-color: var(--black);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        position: absolute;
+        bottom:-411px;
+        left: 0;
+    }
+
+}

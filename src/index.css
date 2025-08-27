@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+  font-family: 'Poppins', sans-serif;
+  --review-bg : #f3f3f3;
+  --border : #DEDEDE;
+  --black : #000000;
+  --white : #FFFFFF;
+  --product-bg : #D9D9D926;
+  --description : rgba(0,0,0,0.75);
+  --banner-price : rgba(0,0,0,0.5);
+  --gradient-start : #E4E4E4;
+   --gradient-end : #FAFAFA;
+   --btnShadown-up : rgba(0,0,0, 0.2);
+   --btnShadown-down : rgba(0,0,0, 0.01);
+
+}
