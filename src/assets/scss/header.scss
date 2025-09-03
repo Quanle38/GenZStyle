@@ -1,6 +1,6 @@
 .Layout__Header{
     &--logo{
-        width: 33.33%;
+        width: 28%;
         .title{
             font-weight: 800;
             font-size: 28px;
@@ -10,7 +10,7 @@
         }
     }
     &--nav{
-         width: 33.33%;
+         width: 28%;
          display: flex;
          justify-content: center;
          gap: 24px;
@@ -33,7 +33,7 @@
     &--icon{
         display: flex;
         justify-content: flex-end;
-         width: 33.33%;
+         width: 28%;
          gap : 39px;
          .icon{
             font-size: 22px;
