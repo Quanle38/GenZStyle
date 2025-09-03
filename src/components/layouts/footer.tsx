@@ -4,7 +4,7 @@ import { FaFacebookF, FaInstagram } from "react-icons/fa";
 export default function Footer() {
   return (
     <footer className="bg-black text-white py-10">
-      <div className="container mx-auto grid grid-cols-12 gap-8">
+     <div className="w-full max-w-screen-xl mx-auto grid grid-cols-12 gap-8 px-8">
         {/* Cột 1 */}
         <div className="col-span-5">
           <h2 className="text-xl font-bold mb-4">GenZStyle</h2>
@@ -30,7 +30,7 @@ export default function Footer() {
         </div>
 
         {/* Cột 2 */}
-        <div className="col-span-5 flex flex-col items-center">
+        <div className="col-span-4 flex flex-col items-center">
           <h3 className="text-lg mb-4">Subscribe for news latter</h3>
           <div className="flex w-full max-w-md">
             <input
@@ -45,7 +45,7 @@ export default function Footer() {
         </div>
 
         {/* Cột 3 */}
-        <div className="col-span-2 text-right">
+        <div className="col-span-3 text-right">
           <h3 className="text-lg mb-4">Quick Links</h3>
           <ul className="space-y-2 text-gray-400">
             <li>

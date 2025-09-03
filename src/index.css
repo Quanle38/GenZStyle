@@ -17,3 +17,6 @@
    --btnShadown-down : rgba(0,0,0, 0.01);
 
 }
+body{
+  @apply font-poppins;
+}

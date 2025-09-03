@@ -1,4 +1,8 @@
-import { Carousel } from "antd";
+// import { Carousel } from "antd";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 import "../assets/scss/popularProducts.scss";
 import { FaArrowRightLong, FaArrowLeftLong } from "react-icons/fa6";
 import type { Settings } from "react-slick";
@@ -72,7 +76,7 @@ export function PopularProducts() {
       </div>
 
       <div className="PopularProducts__right">
-        <Carousel {...settings}>
+        <Slider {...settings}>
           {products.map(product => (
             <div className="carousel-item" key={product.id}>
               <div className="card">
@@ -89,7 +93,7 @@ export function PopularProducts() {
               </div>
             </div>
           ))}
-        </Carousel>
+        </Slider>
       </div>
     </div>
   );
