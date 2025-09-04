@@ -5,7 +5,6 @@ import { PopularProducts } from "../components/popularProduct";
 import { ReviewCarousel } from "../components/reviewCarousel";
 
 export default function Home(){
-    console.log("aaaaaaaa");
     return(
         <div className="Home">
         <HeroSection/>
