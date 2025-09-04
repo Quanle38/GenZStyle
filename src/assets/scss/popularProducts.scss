@@ -32,7 +32,7 @@
 
     h2 {
       font-size: 45px;
-      font-weight: bold;
+      font-weight: 500;
       line-height: 1.2;
       margin-bottom: 20px;
       color: var(--black);
@@ -45,6 +45,7 @@
       color: var(--description);
       margin-bottom: 30px;
       width: 280px;
+      font-weight: 350;
     }
 
     .btn-explore {
@@ -110,8 +111,8 @@
       .name {
         width: 90%;
         margin-top: 10px;
-        font-size: 21px;
-        font-weight: 600;
+        font-size: 18px;
+        font-weight: 550;
         color: var(--black);
         margin-bottom: 22px;
         text-align: left;
@@ -125,7 +126,7 @@
         align-items: center;
 
         .price {
-          font-size: 24px;
+          font-size: 22px;
           color: var(--description);
           margin-bottom: 12px;
           font-weight: 500;

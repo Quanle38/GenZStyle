@@ -13,7 +13,6 @@
         padding: 20px 40px;
         height: 578px;
         overflow: visible;
-
         opacity: 0;
         visibility: hidden;
         position: absolute;
@@ -67,8 +66,8 @@
                 position: absolute;
                 bottom: -155px;
                 left: -50px;
-                font-size: 400px;
-                font-weight: 900;
+                font-size: 380px;
+                font-weight: 850;
                 color: rgba(255, 255, 255, 0.08);
                 z-index: 0;
                 pointer-events: none;
@@ -94,14 +93,14 @@
             color: #fff;
 
             .slide__title {
-                font-size: 58px;
+                font-size: 52px;
                 font-weight: 500;
                 margin-bottom: 12px;
                 line-height: 1.2;
             }
 
             .slide__desc {
-                font-size: 24px;
+                font-size: 20px;
                 margin-bottom: 24px;
                 color: var(--white);
                 max-width: 80%;
@@ -111,7 +110,7 @@
             .slide__explore-btn {
                 background-color: #ffffff;
                 color: #fd8b92;
-                font-size: 28px;
+                font-size: 24px;
                 font-weight: 700;
                 padding: 16px 36px;
                 border: none;
