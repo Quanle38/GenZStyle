@@ -52,6 +52,11 @@
             animation: slide-down 0.3s ease-in-out forwards; 
         }
     }
+    &--menu {
+        &.open {
+             animation: slide-down 0.3s ease-in-out forwards; 
+        }
+    }
 }
 @keyframes slide-down {
  0% {
