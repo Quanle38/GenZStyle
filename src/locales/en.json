@@ -1,0 +1,9 @@
+{
+    "header": {
+        "home": "Home",
+        "shop": "Shop",
+        "login": "Login",
+        "register": "Register",
+        "search": "Search..."
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "header" : {
+        "home" : "Trang Chủ",
+        "shop" : "Mua Sắm",
+        "login" : "Đăng Nhập",
+        "register" : "Đăng Ký",
+        "search" : "Tìm kiếm..." 
+
+    }
+}

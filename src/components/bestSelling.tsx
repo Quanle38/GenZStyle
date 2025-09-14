@@ -1,6 +1,7 @@
 import BestSellingList from "./bestSellingList";
 import productList from "../data/product.json"
 export default function BestSelling() {
+    const sliceData = productList.slice(0,6);
     return (
         <div className="w-full pt-[124px] pb-[51px]">
             
@@ -16,7 +17,7 @@ export default function BestSelling() {
                 <button className=" text-[var(--description)] border-[2px] border-[var(--description)] min-w-[122px] h-[79px] text-[25px] font-medium px-[35px]  hover:bg-[var(--description)] hover:text-[var(--white)]">Child</button> 
             </div>
             <div className="w-full h-[900px] ">
-                 <BestSellingList productList={productList}/>
+                <BestSellingList productList={sliceData} />
             </div>
            
         </div>
