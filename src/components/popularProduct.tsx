@@ -2,10 +2,10 @@
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
 import "../assets/scss/popularProducts.scss";
 import { FaArrowRightLong, FaArrowLeftLong } from "react-icons/fa6";
 import type { Settings } from "react-slick";
+import { useTranslation } from "react-i18next";
 export function PopularProducts() {
   const settings : Settings = {
     dots: true,
@@ -32,7 +32,7 @@ export function PopularProducts() {
         <ul style={{ margin: "0px" }}> {dots} </ul>
       </div>
     ),
-    customPaging: i  => (
+    customPaging: ()  => (
       <div
         style={{
           width: "12px",
@@ -63,16 +63,18 @@ export function PopularProducts() {
     { id: 6, name: "Walking Shoes", price: "₹ 1899.00", image: "/images/shoe3.png" },
   ];
 
+   const { t } = useTranslation("popularProducts");
+
   return (
     <div className="PopularProducts">
-      <div className="PopularProducts__left">
+       <div className="PopularProducts__left">
         <div className="heading">
           <div className="abc" />
-          <span className="subtitle">Our Trending Shoe</span>
+          <span className="subtitle">{t("subtitle")}</span>
         </div>
-        <h2>Most Popular Products</h2>
-        <p>Lorem Ipsum Dolor Sit Amet, Consectetur Adipisicing Elit,</p>
-        <button className="btn-explore">Explore</button>
+        <h2>{t("title")}</h2>
+        <p>{t("description")}</p>
+        <button className="btn-explore">{t("button")}</button>
       </div>
 
       <div className="PopularProducts__right">

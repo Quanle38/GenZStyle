@@ -8,7 +8,7 @@ import productList from "./../data/product.json";
 import ListProduct from "../components/listProduct";
 import type { PaginationProps } from 'antd';
 import { Pagination } from 'antd';
-import type { Product } from "../types/product.type";
+import type { Product } from "../@types/product.type";
 
 export default function Shop() {
     type CateValue = "all" | "men" | "women" | "child" | "boy";

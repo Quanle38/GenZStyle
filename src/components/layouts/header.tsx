@@ -18,7 +18,7 @@ export function HeaderCustom() {
     return (
         <>
             <div className="Layout__Header--logo">
-                <Typography.Title className="title"  >GenZStyle</Typography.Title>
+                <Typography.Title className="title">GenZStyle</Typography.Title>
             </div>
             <div className="Layout__Header--nav">
                 <Typography.Link className="link" href="/">{t("home")}</Typography.Link>
@@ -37,8 +37,8 @@ export function HeaderCustom() {
             )};
             {menuShow && (
                <div className={`Layout__Header--menu ${menuShow ? "open" : ""} absolute top-0 left-0 w-full h-[200px] z-20 backdrop-filter backdrop-blur-sm bg-opacity-70 border border-gray-100 bg-gray-300 flex flex-col justify-center items-center gap-4`}>
-                    <button onClick={() => onNavigate("login")} className="menu-login w-[35%] h-[60px] bg-[var(--black)] text-white rounded-xl border-[2px] text-base border-black border-solid   hover:scale-105 transition ">{t("login")}</button>
-                    <button onClick={() => onNavigate("register")} className="menu-register w-[35%] h-[60px] text-base rounded-xl border-[2px] border-black border-solid  hover:scale-105 transition ">{t("register")}</button>
+                    <button onClick={() => onNavigate("login")} className="menu-login w-[35%] h-[60px] bg-[var(--black)] text-white rounded-xl border-[2px] text-base border-black border-solid font-medium   hover:scale-105 transition ">{t("login")}</button>
+                    <button onClick={() => onNavigate("register")} className="menu-register w-[35%] h-[60px] text-base rounded-xl border-[2px] border-black border-solid font-medium  hover:scale-105 transition ">{t("register")}</button>
                     <button/>
                     <button onClick={() => setMenuShow(false)} className="closeButton absolute right-[30px] top-[30px]"><IoCloseOutline className=" h-[32px] w-[32px]" /></button>
                 </div>

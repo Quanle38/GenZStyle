@@ -4,6 +4,7 @@ import Shop from './pages/shop'
 import { MainLayout } from './components/layouts'
 import RegisterPage from './pages/register'
 import LoginPage from './pages/login'
+import UserProfile from './pages/userProfile'
 
 function App() {
 
@@ -14,9 +15,11 @@ function App() {
           <Route element={<MainLayout/>}>
             <Route path="/" element={<Home />} />
             <Route path="/shop" element={<Shop />} />
+            
           </Route>
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/user" element={<UserProfile />} />
         </Routes>
       </BrowserRouter>
     </>

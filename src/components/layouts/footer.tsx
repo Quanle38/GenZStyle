@@ -1,17 +1,18 @@
 // src/components/Footer.tsx
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 export default function Footer() {
+  const { t } = useTranslation("footer");
+
   return (
     <footer className="bg-black text-white py-10">
-     <div className="w-full max-w-screen-xl mx-auto grid grid-cols-12 gap-8 px-8">
+      <div className="w-full max-w-screen-xl mx-auto grid grid-cols-12 gap-8 px-8">
         {/* Cột 1 */}
         <div className="col-span-5">
-          <h2 className="text-xl font-bold mb-4">GenZStyle</h2>
+          <h2 className="text-xl font-bold mb-4">{t("brandTitle")}</h2>
           <p className="text-sm text-gray-400 mb-4">
-            GenZStyle – cửa hàng giày thời trang dành cho giới trẻ. 
-            Luôn cập nhật mẫu mới, đa dạng phong cách từ năng động đến sang trọng, 
-            giúp bạn tự tin thể hiện cá tính trên từng bước chân.
+            {t("brandDescription")}
           </p>
           <div className="flex space-x-4">
             <a
@@ -31,46 +32,46 @@ export default function Footer() {
 
         {/* Cột 2 */}
         <div className="col-span-4 flex flex-col items-center">
-          <h3 className="text-lg mb-4">Subscribe for news latter</h3>
+          <h3 className="text-lg mb-4">{t("subscribeTitle")}</h3>
           <div className="flex w-full max-w-md">
             <input
               type="email"
-              placeholder="Enter Email..."
+              placeholder={t("subscribePlaceholder")}
               className="w-full px-4 py-2 text-black rounded-l-md focus:outline-none"
             />
             <button className="bg-white text-black px-4 rounded-r-md font-semibold hover:bg-gray-200">
-              SUBSCRIBE
+              {t("subscribeButton")}
             </button>
           </div>
         </div>
 
         {/* Cột 3 */}
         <div className="col-span-3 text-right">
-          <h3 className="text-lg mb-4">Quick Links</h3>
+          <h3 className="text-lg mb-4">{t("quickLinksTitle")}</h3>
           <ul className="space-y-2 text-gray-400">
             <li>
               <a href="#" className="hover:text-white">
-                Home
+                {t("quickLinksHome")}
               </a>
             </li>
             <li>
               <a href="#" className="hover:text-white">
-                Shop
+                {t("quickLinksShop")}
               </a>
             </li>
             <li>
               <a href="#" className="hover:text-white">
-                Category
+                {t("quickLinksCategory")}
               </a>
             </li>
             <li>
               <a href="#" className="hover:text-white">
-                Contact
+                {t("quickLinksContact")}
               </a>
             </li>
             <li>
               <a href="#" className="hover:text-white">
-                Privacy
+                {t("quickLinksPrivacy")}
               </a>
             </li>
           </ul>
@@ -79,7 +80,7 @@ export default function Footer() {
 
       {/* Bottom */}
       <div className="mt-10 border-t border-gray-700 pt-6 text-center text-gray-400 text-sm">
-        www.GenzStyle.com © all right reserve
+        {t("bottomText")}
       </div>
     </footer>
   );

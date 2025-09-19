@@ -1,9 +1,41 @@
 {
-    "header": {
-        "home": "Home",
-        "shop": "Shop",
-        "login": "Login",
-        "register": "Register",
-        "search": "Search..."
-    }
+        "header": {
+                "home": "Home",
+                "shop": "Shop",
+                "login": "Login",
+                "register": "Register",
+                "search": "Search..."
+        },
+        "hero": {
+                "title": "Find Your Sole Mate With Us",
+                "description": "Discover the perfect fit for your feet and your lifestyle !",
+                "button": "Shop Now"
+        },
+        "popularProducts": {
+                "subtitle": "Our Trending Shoe",
+                "title": "Most Popular Products",
+                "description": "Lorem Ipsum Dolor Sit Amet, Consectetur Adipisicing Elit,",
+                "button": "Explore"
+        },
+        "footer": {
+                "brandTitle": "GenZStyle",
+                "brandDescription": "GenZStyle – fashion shoe store for young people. Always updating new models, diverse styles from sporty to elegant, helping you confidently express your personality in every step.",
+                "subscribeTitle": "Subscribe for newsletter",
+                "subscribePlaceholder": "Enter Email...",
+                "subscribeButton": "SUBSCRIBE",
+                "quickLinksTitle": "Quick Links",
+                "quickLinksHome": "Home",
+                "quickLinksShop": "Shop",
+                "quickLinksCategory": "Category",
+                "quickLinksContact": "Contact",
+                "quickLinksPrivacy": "Privacy",
+                "bottomText": "www.GenzStyle.com © all rights reserved"
+        },
+        "bestSelling": {
+                "title": "Best Selling",
+                "man": "Man",
+                "woman": "Woman",
+                "boy": "Boy",
+                "child": "Child"
+        }
 }

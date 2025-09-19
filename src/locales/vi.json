@@ -1,10 +1,41 @@
 {
-    "header" : {
-        "home" : "Trang Chủ",
-        "shop" : "Mua Sắm",
-        "login" : "Đăng Nhập",
-        "register" : "Đăng Ký",
-        "search" : "Tìm kiếm..." 
-
-    }
+        "header": {
+                "home": "Trang Chủ",
+                "shop": "Mua Sắm",
+                "login": "Đăng Nhập",
+                "register": "Đăng Ký",
+                "search": "Tìm kiếm..."
+        },
+        "hero": {
+                "title": "Tìm người bạn đồng hành cho đôi chân của bạn cùng chúng tôi",
+                "description": "Khám phá sự vừa vặn hoàn hảo cho đôi chân và phong cách sống của bạn!",
+                "button": "Mua Ngay"
+        },
+        "popularProducts": {
+                "subtitle": "Những đôi giày xu hướng",
+                "title": "Sản phẩm phổ biến nhất",
+                "description": "Khám phá bộ sưu tập mới, được yêu thích nhất hiện nay.",
+                "button": "Khám Phá"
+        },
+        "footer": {
+                "brandTitle": "GenZStyle",
+                "brandDescription": "GenZStyle – cửa hàng giày thời trang dành cho giới trẻ. Luôn cập nhật mẫu mới, đa dạng phong cách từ năng động đến sang trọng, giúp bạn tự tin thể hiện cá tính trên từng bước chân.",
+                "subscribeTitle": "Đăng ký nhận bản tin",
+                "subscribePlaceholder": "Nhập email...",
+                "subscribeButton": "ĐĂNG KÝ",
+                "quickLinksTitle": "Liên kết nhanh",
+                "quickLinksHome": "Trang Chủ",
+                "quickLinksShop": "Mua Sắm",
+                "quickLinksCategory": "Danh Mục",
+                "quickLinksContact": "Liên Hệ",
+                "quickLinksPrivacy": "Chính Sách",
+                "bottomText": "www.GenzStyle.com © Đã đăng ký bản quyền"
+        },
+        "bestSelling": {
+                "title": "Bán Chạy Nhất",
+                "man": "Nam",
+                "woman": "Nữ",
+                "boy": "Bé Trai",
+                "child": "Trẻ Em"
+        }
 }
