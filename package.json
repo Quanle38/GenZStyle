@@ -25,6 +25,7 @@
     "react-slick": "^0.31.0",
     "sass": "^1.90.0",
     "slick-carousel": "^1.8.1",
+    "use-local-storage-state": "^19.5.0",
     "yup": "^1.7.0"
   },
   "devDependencies": {

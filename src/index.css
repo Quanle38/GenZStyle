@@ -16,19 +16,30 @@
   --gradient-end: #FAFAFA;
   --btnShadown-up: rgba(0, 0, 0, 0.2);
   --btnShadown-down: rgba(0, 0, 0, 0.01);
-  --subShop:#4B5563;
+  --subShop: #4B5563;
+}
 
-  @layer base {
+@layer base {
 
-    html,
-    body {
-      @apply font-display;
-      /* toàn bộ text mặc định là font-display (Poppins) */
-    }
-
-    * {
-      font-family: "Poppins", sans-serif !important;
-      /* mọi element kế thừa từ body */
-    }
+  html,
+  body {
+    @apply font-display;
+    /* toàn bộ text mặc định là font-display (Poppins) */
   }
+
+  * {
+    font-family: "Poppins", sans-serif !important;
+    /* mọi element kế thừa từ body */
+  }
+}
+
+.custom-tabs .ant-tabs-tab .ant-tabs-tab-btn {
+  color: var(--white);
+}
+
+.custom-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: hsl(198, 97%, 57%) !important;
+}
+ .ant-tabs .ant-tabs-ink-bar {
+  background-color: hsl(198, 97%, 57%)  !important;
 }

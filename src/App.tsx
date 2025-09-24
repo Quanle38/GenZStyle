@@ -5,9 +5,12 @@ import { MainLayout } from './components/layouts'
 import RegisterPage from './pages/register'
 import LoginPage from './pages/login'
 import UserProfile from './pages/userProfile'
+import Cart from './pages/cart'
+
 
 function App() {
 
+ 
   return (
     <>
       <BrowserRouter>
@@ -19,7 +22,8 @@ function App() {
           </Route>
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/user" element={<UserProfile />} />
+            <Route path="/user/:id" element={<UserProfile />} />
+            <Route path="/cart" element={<Cart />} />
         </Routes>
       </BrowserRouter>
     </>

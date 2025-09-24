@@ -7,6 +7,8 @@ import { IoCloseOutline } from "react-icons/io5";
 import { useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import LanguageSwitch from "../languageSwitch";
+
 export function HeaderCustom() {
     const [searchShow, setSearchShow] = useState(false);
     const [menuShow, setMenuShow] = useState(false);
@@ -25,6 +27,7 @@ export function HeaderCustom() {
                 <Typography.Link className="link" href="/shop">{t("shop")}</Typography.Link>
             </div>
             <div className="Layout__Header--icon">
+                <LanguageSwitch className="icon"/>
                 <BiSearch onClick={() => setSearchShow(true)}  className="icon" > </BiSearch>
                 <BsCart3 className="icon"></BsCart3>
                 <AiOutlineMenu onClick={() => setMenuShow(true)} className="icon"></AiOutlineMenu>
@@ -34,7 +37,7 @@ export function HeaderCustom() {
                     <input className="search-input w-[70%] h-[50px] rounded-[30px] border border-[var(--border)] m-auto pl-[15px] " type="text" placeholder={t("search")} />
                     <button onClick={() => setSearchShow(false)} className="closeButton absolute right-[30px] top-[30px]"><IoCloseOutline className=" h-[32px] w-[32px]" /></button>
                 </div>
-            )};
+            )}
             {menuShow && (
                <div className={`Layout__Header--menu ${menuShow ? "open" : ""} absolute top-0 left-0 w-full h-[200px] z-20 backdrop-filter backdrop-blur-sm bg-opacity-70 border border-gray-100 bg-gray-300 flex flex-col justify-center items-center gap-4`}>
                     <button onClick={() => onNavigate("login")} className="menu-login w-[35%] h-[60px] bg-[var(--black)] text-white rounded-xl border-[2px] text-base border-black border-solid font-medium   hover:scale-105 transition ">{t("login")}</button>
@@ -42,7 +45,7 @@ export function HeaderCustom() {
                     <button/>
                     <button onClick={() => setMenuShow(false)} className="closeButton absolute right-[30px] top-[30px]"><IoCloseOutline className=" h-[32px] w-[32px]" /></button>
                 </div>
-            )};
+            )}
         </>
     )
 }

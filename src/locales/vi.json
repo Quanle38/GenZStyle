@@ -1,4 +1,5 @@
 {
+        "translation": "",
         "header": {
                 "home": "Trang Chủ",
                 "shop": "Mua Sắm",
@@ -7,35 +8,35 @@
                 "search": "Tìm kiếm..."
         },
         "hero": {
-                "title": "Tìm người bạn đồng hành cho đôi chân của bạn cùng chúng tôi",
-                "description": "Khám phá sự vừa vặn hoàn hảo cho đôi chân và phong cách sống của bạn!",
+                "title": "Tìm đôi giày phù hợp cùng chúng tôi",
+                "description": "Khám phá đôi giày hoàn hảo cho đôi chân và phong cách sống của bạn!",
                 "button": "Mua Ngay"
         },
         "popularProducts": {
-                "subtitle": "Những đôi giày xu hướng",
-                "title": "Sản phẩm phổ biến nhất",
-                "description": "Khám phá bộ sưu tập mới, được yêu thích nhất hiện nay.",
+                "subtitle": "Giày đang thịnh hành",
+                "title": "Sản Phẩm Phổ Biến",
+                "description": "Lorem Ipsum Dolor Sit Amet, Consectetur Adipisicing Elit,",
                 "button": "Khám Phá"
         },
         "footer": {
                 "brandTitle": "GenZStyle",
-                "brandDescription": "GenZStyle – cửa hàng giày thời trang dành cho giới trẻ. Luôn cập nhật mẫu mới, đa dạng phong cách từ năng động đến sang trọng, giúp bạn tự tin thể hiện cá tính trên từng bước chân.",
-                "subscribeTitle": "Đăng ký nhận bản tin",
-                "subscribePlaceholder": "Nhập email...",
+                "brandDescription": "GenZStyle – cửa hàng giày thời trang cho giới trẻ. Luôn cập nhật mẫu mới, đa dạng phong cách từ năng động đến thanh lịch, giúp bạn tự tin thể hiện cá tính trong từng bước đi.",
+                "subscribeTitle": "Đăng ký nhận tin",
+                "subscribePlaceholder": "Nhập Email...",
                 "subscribeButton": "ĐĂNG KÝ",
-                "quickLinksTitle": "Liên kết nhanh",
+                "quickLinksTitle": "Liên Kết Nhanh",
                 "quickLinksHome": "Trang Chủ",
                 "quickLinksShop": "Mua Sắm",
                 "quickLinksCategory": "Danh Mục",
                 "quickLinksContact": "Liên Hệ",
-                "quickLinksPrivacy": "Chính Sách",
-                "bottomText": "www.GenzStyle.com © Đã đăng ký bản quyền"
+                "quickLinksPrivacy": "Bảo Mật",
+                "bottomText": "www.GenzStyle.com © mọi quyền được bảo lưu"
         },
         "bestSelling": {
-                "title": "Bán Chạy Nhất",
+                "title": "Bán Chạy",
                 "man": "Nam",
                 "woman": "Nữ",
-                "boy": "Bé Trai",
+                "boy": "Trai",
                 "child": "Trẻ Em"
         }
 }

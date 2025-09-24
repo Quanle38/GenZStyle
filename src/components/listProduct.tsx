@@ -1,4 +1,4 @@
-import type { Product } from "../@types/product.type";
+import type { Product } from "../types/product.type";
 import { IoIosHeartEmpty, IoIosHeart } from "react-icons/io";
 import { FaArrowUp } from "react-icons/fa6";
 import { useState } from "react";
