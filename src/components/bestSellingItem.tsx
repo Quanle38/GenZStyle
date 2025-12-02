@@ -3,11 +3,13 @@ import { FaArrowUp } from "react-icons/fa6";
 import { useState } from "react";
 import Badge from "./badge";
 import type { Product } from "../types/product.type";
+import { useNavigate } from "react-router-dom";
 interface IBestSellingItemProps {
     product: Product
 }
 export default function BestSellingItem({ product }: IBestSellingItemProps) {
     const [isHovered, setIsHovered] = useState(false);
+    const navigate = useNavigate();
     return (
         <>
             <div className=" border-[2px] border-[var(--border)] rounded-[25px] h-[430px] w-full row-span-3 relative">
@@ -21,7 +23,12 @@ export default function BestSellingItem({ product }: IBestSellingItemProps) {
                             <p className='current-price text-xl'>${product.price}</p>
                             <p className='old-price line-through text-base'>${product.oldPrice}</p>
                         </div>
-                        <button className='w-[45px] h-[45px] rounded-[50%] bg-[var(--black)] '> <FaArrowUp className='rotate-45 m-auto text-[var(--white)] text-2xl ' /></button>
+                        <button
+                            onClick={() => navigate(`/product/${product.id}`)}
+                            className="w-[45px] h-[45px] rounded-[50%] bg-[var(--black)]"
+                        >
+                            <FaArrowUp className="rotate-45 m-auto text-[var(--white)] text-2xl" />
+                        </button>
                     </div>
                 </div>
                 <button onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className='absolute top-[38px] right-[31px]'>{isHovered ? <IoIosHeart className='text-3xl m-auto' /> : <IoIosHeartEmpty className='text-3xl m-auto' />}</button>

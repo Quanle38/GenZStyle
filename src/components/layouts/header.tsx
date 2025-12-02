@@ -20,7 +20,7 @@ export function HeaderCustom() {
     return (
         <>
             <div className="Layout__Header--logo">
-                <Typography.Title className="title">GenZStyle</Typography.Title>
+                <Typography.Title className="title" >GenZStyle</Typography.Title>
             </div>
             <div className="Layout__Header--nav">
                 <Typography.Link className="link" href="/">{t("home")}</Typography.Link>
@@ -29,7 +29,7 @@ export function HeaderCustom() {
             <div className="Layout__Header--icon">
                 <LanguageSwitch className="icon"/>
                 <BiSearch onClick={() => setSearchShow(true)}  className="icon" > </BiSearch>
-                <BsCart3 className="icon"></BsCart3>
+                <BsCart3 className="icon"   onClick={() => navigate("/cart")} ></BsCart3>
                 <AiOutlineMenu onClick={() => setMenuShow(true)} className="icon"></AiOutlineMenu>
             </div>
             {searchShow && (

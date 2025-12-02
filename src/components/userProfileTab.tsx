@@ -234,6 +234,13 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
                                 <p>{form.first_name || "John"}</p>
                             )}
                         </li>
+                         <li>
+                               {errors.firtst && (
+                                      <>
+                                      <p className="mt-1 text-sm text-red-500 block">{errors.address}</p>
+                                      </>
+                                    )}
+                        </li>
 
                         {/* Last Name */}
                         <li className="flex items-center">
