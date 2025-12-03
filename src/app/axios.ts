@@ -2,7 +2,7 @@
 import axios, { AxiosError,  type InternalAxiosRequestConfig } from 'axios'
 import Cookies from 'js-cookie'
 
-const API_URL = process.env.API_URL || "fallback"
+const API_URL = import.meta.env.VITE_API_URL || "fallback"
 const axiosInstance = axios.create({
     baseURL: API_URL + "/api/v1",
     timeout: 10000,

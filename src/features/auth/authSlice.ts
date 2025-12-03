@@ -1,141 +1,82 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import Cookies from "js-cookie";
-import type { AuthData, DataResponse, LoginRequest, UserData, RefreshResponse } from "./authTypes";
-import { authAPI } from "./authAPI";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import type { LoginRequest, UserData } from "./authTypes"
+import { authAPI } from "./authAPI"
+import type { AxiosError } from "axios"
 
 interface AuthState {
     user: UserData | null;
-    accessToken: string | null;
-    refreshToken: string | null;
-    status: "idle" | "loading" | "succeeded" | "failed";
+    isLoading: boolean;
     error: string | null;
 }
 
 const initialState: AuthState = {
-    user: Cookies.get("user") ? JSON.parse(Cookies.get("user") as string) : null,
-    accessToken: Cookies.get("access_token") || null,
-    refreshToken: Cookies.get("refresh_token") || null,
-    status: "idle",
-    error: null,
+    user: null,
+    isLoading: false,
+    error: null
 };
 
-// ======================================
-// 🔥 LOGIN
-// ======================================
-export const login = createAsyncThunk<
-    DataResponse<AuthData>,
-    LoginRequest,
-    { rejectValue: string }
->(
+// ✅ Fix: Properly handle Axios errors and return serializable data
+const loginThunk = createAsyncThunk(
     "auth/login",
-    async (body, { rejectWithValue }) => {
+    async (body: LoginRequest, thunkAPI) => {
         try {
             const response = await authAPI.login(body);
-            const authData = response.data.data; // 🎯 lấy đúng "data"
-
-            Cookies.set("access_token", authData.access_token, { expires: 1 / 24, secure: true });
-            Cookies.set("refresh_token", authData.refresh_token, { expires: 7, secure: true });
-            Cookies.set("user", JSON.stringify(authData.user), { expires: 7, secure: true });
-
-            return response.data;
-        } catch (err: any) {
-            const error = err.response?.data?.message || "Đăng nhập thất bại!";
-            return rejectWithValue(error);
+            console.log("response data", response.data.data)
+            return response.data.data;
+        } catch (error) {
+            // ✅ Extract only serializable error information
+            const axiosError = error as AxiosError<{
+                message?: string;
+                error?: string;
+            }>;
+            
+            const errorMessage = 
+                axiosError.response?.data?.message || 
+                axiosError.response?.data?.error ||
+                axiosError.message || 
+                "Login failed";
+            
+            return thunkAPI.rejectWithValue({
+                message: errorMessage,
+                status: axiosError.response?.status,
+            });
         }
     }
 );
 
-// ======================================
-// 🔥 REFRESH TOKEN
-// ======================================
-export const refreshToken = createAsyncThunk<
-    DataResponse<RefreshResponse>,
-    void,
-    { rejectValue: string }
->(
-    "auth/refresh",
-    async (_, { rejectWithValue }) => {
-        try {
-            const response = await authAPI.refresh();
-            const ref = response.data.data;
-
-            Cookies.set("access_token", ref.access_token, { expires: 1 / 24, secure: true });
-            Cookies.set("refresh_token", ref.refresh_token, { expires: 7, secure: true });
-
-            return response.data;
-        } catch (err) {
-             console.log(err)
-            return rejectWithValue("Không thể làm mới token!");
-           
-        }
-    }
-);
-
-// ======================================
-// 🔥 LOGOUT
-// ======================================
-export const logout = createAsyncThunk("auth/logout", async () => {
-    Cookies.remove("access_token");
-    Cookies.remove("refresh_token");
-    Cookies.remove("user");
-});
-
-// ======================================
-// 🔥 SLICE
-// ======================================
-export const authSlice = createSlice({
+const authSlice = createSlice({
     name: "auth",
-    initialState,
+    initialState: initialState,
     reducers: {
-        clearError: (state) => {
+        logout: (state) => {
+            state.user = null;
+            state.isLoading = false;
             state.error = null;
-        },
+        }
     },
-
     extraReducers: (builder) => {
-        // LOGIN
         builder
-            .addCase(login.pending, (state) => {
-                state.status = "loading";
+            .addCase(loginThunk.pending, (state) => {
+                state.isLoading = true;
                 state.error = null;
             })
-            .addCase(login.fulfilled, (state, action: PayloadAction<DataResponse<AuthData>>) => {
-                state.status = "succeeded";
-                state.accessToken = action.payload.data.access_token;
-                state.refreshToken = action.payload.data.refresh_token;
-                state.user = action.payload.data.user;
+            .addCase(loginThunk.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.user = action.payload.user;
+                state.error = null;
             })
-            .addCase(login.rejected, (state, action) => {
-                state.status = "failed";
-                state.error = action.payload as string;
-                state.accessToken = null;
-                state.refreshToken = null;
-                state.user = null;
+            .addCase(loginThunk.rejected, (state, action) => {
+                state.isLoading = false;
+                // ✅ Now payload is serializable
+                if (action.payload) {
+                    state.error = (action.payload as { message: string }).message;
+                } else {
+                    state.error = action.error.message || "Login failed";
+                }
             });
-
-        // REFRESH TOKEN
-        builder
-            .addCase(refreshToken.fulfilled, (state, action: PayloadAction<DataResponse<RefreshResponse>>) => {
-                state.accessToken = action.payload.data.access_token;
-                state.refreshToken = action.payload.data.refresh_token;
-            })
-            .addCase(refreshToken.rejected, (state) => {
-                state.accessToken = null;
-                state.refreshToken = null;
-                state.user = null;
-            });
-
-        // LOGOUT
-        builder.addCase(logout.fulfilled, (state) => {
-            state.status = "idle";
-            state.accessToken = null;
-            state.refreshToken = null;
-            state.user = null;
-            state.error = null;
-        });
-    },
+    }
 });
 
-export const { clearError } = authSlice.actions;
+export const { logout } = authSlice.actions;
+export { loginThunk }
 export default authSlice.reducer;

@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { loginThunk } from "../features/auth/authSlice";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -9,7 +11,8 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [success, setSuccess] = useState(false);
-
+  const dispath = useAppDispatch();
+  const { error, isLoading, user } = useAppSelector(state => state.auth)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -18,7 +21,7 @@ export default function LoginPage() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: typeof errors = {};
     if (!formData.email) newErrors.email = "Email is required";
@@ -27,10 +30,31 @@ export default function LoginPage() {
 
     if (Object.keys(newErrors).length === 0) {
       setSuccess(true);
-      console.log("Login success:", formData);
+      await dispath(loginThunk({email : formData.email, password : formData.password}))
     }
   };
-
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+      <div className="text-center">
+        <div className="loader mb-4"></div>
+        <p className="text-lg">Logging in...</p>
+      </div>
+    </div>;
+  }
+  if(error){
+    return <div className="min-h-screen flex items-center justify-center bg-red-900 text-white">
+      <div className="text-center p-6 bg-red-800 rounded-lg">
+        <h2 className="text-2xl font-bold mb-4">Login Failed</h2>
+        <p className="mb-4">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-white text-red-800 font-semibold rounded-lg hover:bg-gray-200 transition"
+        >
+          Retry
+        </button>
+      </div>
+    </div>;
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white">
       <div className="w-full max-w-md bg-gray-900/80 backdrop-blur-md rounded-2xl shadow-2xl p-8">
@@ -147,6 +171,7 @@ export default function LoginPage() {
               </svg>
             </div>
             <h3 className="text-2xl font-bold mt-6">WELCOME GenZStyle</h3>
+            <h4 className="text-lg mt-2">Hello {user?.first_name}</h4>
             <p className="text-gray-400 mt-2">Step into your style...</p>
           </div>
         )}
