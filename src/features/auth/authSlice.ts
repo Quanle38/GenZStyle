@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import type { LoginRequest, UserData } from "./authTypes"
+import type { AuthData, LoginRequest, UserData } from "./authTypes"
 import { authAPI } from "./authAPI"
 import type { AxiosError } from "axios"
 
@@ -22,7 +22,7 @@ const loginThunk = createAsyncThunk(
         try {
             const response = await authAPI.login(body);
             console.log("response data", response.data.data)
-            return response.data.data;
+            return response.data.data as AuthData;
         } catch (error) {
             // ✅ Extract only serializable error information
             const axiosError = error as AxiosError<{

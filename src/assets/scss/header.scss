@@ -85,3 +85,20 @@
         transform: translateY(0);
     }
 }
+.Layout__Header--userMenu {
+    animation: fade 0.15s ease-in-out forwards;
+    font-size: 15px;
+     width: 140px;
+    .menu-item {
+        transition: 0.15s;
+        font-weight: 400;
+        cursor: pointer;
+        height: 50px;
+        line-height: 100%;
+    }
+}
+
+@keyframes fade {
+    0% { opacity: 0; transform: translateY(-8px); }
+    100% { opacity: 1; transform: translateY(0); }
+}

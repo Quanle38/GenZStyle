@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { loginThunk } from "../features/auth/authSlice";
+import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -10,9 +12,8 @@ export default function LoginPage() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  const [success, setSuccess] = useState(false);
   const dispath = useAppDispatch();
-  const { error, isLoading, user } = useAppSelector(state => state.auth)
+  const { error, isLoading } = useAppSelector(state => state.auth)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -20,7 +21,8 @@ export default function LoginPage() {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
-
+  const {setAccessToken} = useAuth();
+  const navigate = useNavigate();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: typeof errors = {};
@@ -29,8 +31,11 @@ export default function LoginPage() {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      setSuccess(true);
-      await dispath(loginThunk({email : formData.email, password : formData.password}))
+        const loginData = await dispath(loginThunk({ email: formData.email, password: formData.password }));
+        if(loginThunk.fulfilled.match(loginData)){
+          setAccessToken(loginData.payload.access_token);
+          navigate("/");
+        }
     }
   };
   if (isLoading) {
@@ -41,7 +46,7 @@ export default function LoginPage() {
       </div>
     </div>;
   }
-  if(error){
+  if (error) {
     return <div className="min-h-screen flex items-center justify-center bg-red-900 text-white">
       <div className="text-center p-6 bg-red-800 rounded-lg">
         <h2 className="text-2xl font-bold mb-4">Login Failed</h2>
@@ -58,8 +63,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white">
       <div className="w-full max-w-md bg-gray-900/80 backdrop-blur-md rounded-2xl shadow-2xl p-8">
-        {!success ? (
-          <>
+        
             {/* Logo + Title */}
             <div className="text-center mb-8">
               <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-tr from-green-400 via-orange-500 to-yellow-400 flex items-center justify-center">
@@ -150,31 +154,8 @@ export default function LoginPage() {
                 <span>Login with Google</span>
               </button>
             </form>
-          </>
-        ) : (
-          <div className="text-center py-12">
-            <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-r from-green-400 via-orange-500 to-yellow-400 flex items-center justify-center">
-              <svg
-                width="32"
-                height="32"
-                viewBox="0 0 32 32"
-                fill="none"
-                className="text-black"
-              >
-                <path
-                  d="M10 16l6 6 12-12"
-                  stroke="black"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold mt-6">WELCOME GenZStyle</h3>
-            <h4 className="text-lg mt-2">Hello {user?.first_name}</h4>
-            <p className="text-gray-400 mt-2">Step into your style...</p>
-          </div>
-        )}
+   
+        
       </div>
     </div>
   );
