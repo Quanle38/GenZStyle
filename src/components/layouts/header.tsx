@@ -19,6 +19,9 @@ export function HeaderCustom() {
     const onNavigate = (link: string) => {
         navigate("/" + link);
     }
+    const logoutFun = async () =>{
+        await logout();
+    }
     const { isAuthenticated, logout} = useAuth();
     const { t } = useTranslation("header");
     return (
@@ -85,7 +88,7 @@ export function HeaderCustom() {
 
                     <button
                         onClick={() => {
-                            logout();
+                            logoutFun();
                         }}
                         className="menu-item px-4 py-2 text-left hover:bg-red-100 text-red-600 font-medium"
                     >

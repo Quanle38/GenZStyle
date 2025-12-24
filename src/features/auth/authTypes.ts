@@ -21,16 +21,32 @@ export interface UserData {
 
 export interface AuthData {
     access_token: string;
-    refresh_token: string;
     user: UserData;
 }
 
 export interface RefreshResponse {
     access_token: string;
-    refresh_token: string;
 }
 
 export interface DataResponse<T> {
     message: string;
     data: T;
+}
+
+
+export interface RegisterRequestBody {
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+  phone_number: string;
+  birthday: string;
+  gender: string;
+  address: string;
+  file? : string;  
+}
+
+export interface FailedResponse {
+    success : boolean;
+    error : string;
 }

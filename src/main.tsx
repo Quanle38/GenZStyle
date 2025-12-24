@@ -4,12 +4,14 @@ import "./index.css";
 import App from "./App.tsx";
 import "./i18n.ts";
 import { store } from "./app/store";
-import { AuthProvider } from "./contexts/authContext"; 
+import { AuthProvider } from "./contexts/authContext";
+import { Toaster } from "sonner";
 
 createRoot(document.getElementById("root")!).render(
-  <AuthProvider>
-    <Provider store={store}>
+  <Provider store={store}>
+    <AuthProvider>
+      <Toaster position="top-center" richColors />
       <App />
-    </Provider>
-  </AuthProvider>
+    </AuthProvider>
+  </Provider>
 );

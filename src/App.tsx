@@ -10,7 +10,6 @@ import ProductPage from './pages/detail'
 
 
 function App() {
-
  
   return (
     <>
@@ -19,7 +18,6 @@ function App() {
           <Route element={<MainLayout/>}>
             <Route path="/" element={<Home />} />
             <Route path="/shop" element={<Shop />} />
-            
           </Route>
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />

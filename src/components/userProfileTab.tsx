@@ -1,22 +1,23 @@
 import { useState, type Dispatch, type SetStateAction } from "react";
 import * as yup from "yup";
+import type { UserData } from "../features/auth/authTypes";
 
 interface IUserProfileTab {
     errors: Record<string, string>;
     setErrors: Dispatch<SetStateAction<Record<string, string>>>;
-
+    user : UserData | null;
 }
 
-export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
+export function UserProfileTab({ errors, setErrors, user }: IUserProfileTab) {
     const [isEdit, setIsEdit] = useState<boolean>(false);
     const [form, setForm] = useState({
-        first_name: "",
-        last_name: "",
-        birthday: "",
-        gender: "male",
-        email: "",
-        phone: "",
-        address: "",
+        first_name: user?.first_name || "Unknow",
+        last_name: user?.last_name || "Unknow",
+        birthday: user?.dob || "Unknow",
+        gender: user?.gender.toUpperCase() || "MALE",
+        email: user?.email || "Unknow",
+        phone: user?.phone_number || "Unknow",
+        membership : user?.membership_id || "BROZE"
     });
 
     const today = new Date();
@@ -107,9 +108,9 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
                     className="rounded-full w-48 h-48 mx-auto mb-4 border-4 border-indigo-800 dark:border-blue-900 transition-transform duration-300 hover:scale-105"
                 />
                 <h1 className="text-2xl font-bold text-indigo-800 dark:text-white mb-2">
-                    John Doe
+                    {form.first_name}, {form.last_name}
                 </h1>
-                <p className="text-gray-600 dark:text-gray-300">Software Developer</p>
+                <p className="text-gray-600 dark:text-gray-300"></p>
                 <button
                     className="mt-4 bg-indigo-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900 transition-colors duration-300"
                 >
@@ -144,7 +145,7 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
                   focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                                 />
                             ) : (
-                                <p>john.doe@example.com</p>
+                                <p>{form.email}</p>
                             )}
                         </li>
 
@@ -167,47 +168,8 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
                   focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                                 />
                             ) : (
-                                <p>+1 (555) 123-4567</p>
+                                <p>{form.phone}</p>
                             )}
-                        </li>
-
-                        {/* Location */}
-                        <li className="flex items-center">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5 mr-2 text-indigo-800 dark:text-blue-900"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                            >
-                                <path
-                                    fillRule="evenodd"
-                                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                                    clipRule="evenodd"
-                                />
-                            </svg>
-                            {isEdit ? (
-                                <>
-                                    <input
-                                        onChange={(e) => handleChange(e)}
-                                        name="address"
-                                        type="text"
-                                        defaultValue="San Francisco, CA"
-                                        className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
-                  bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
-                  focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
-                                    />
-                                 
-                                </>
-                            ) : (
-                                <p>{form.address || "San Francisco, CA"}</p>
-                            )}
-                        </li>
-                        <li>
-                               {errors.address && (
-                                      <>
-                                      <p className="mt-1 text-sm text-red-500 block">{errors.address}</p>
-                                      </>
-                                    )}
                         </li>
                     </ul>
 

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { loginThunk } from "../features/auth/authSlice";
-import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -10,10 +10,12 @@ export default function LoginPage() {
     password: "",
     remember: false,
   });
+
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  const dispath = useAppDispatch();
-  const { error, isLoading } = useAppSelector(state => state.auth)
+  const dispatch = useAppDispatch();
+  const { error, isLoading } = useAppSelector(state => state.auth);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -21,8 +23,10 @@ export default function LoginPage() {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
-  const {setAccessToken} = useAuth();
+
   const navigate = useNavigate();
+  const { setAccessToken } = useAuth();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: typeof errors = {};
@@ -31,13 +35,17 @@ export default function LoginPage() {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-        const loginData = await dispath(loginThunk({ email: formData.email, password: formData.password }));
-        if(loginThunk.fulfilled.match(loginData)){
-          setAccessToken(loginData.payload.access_token);
-          navigate("/");
-        }
+      const result = await dispatch(
+        loginThunk({ email: formData.email, password: formData.password })
+      ).unwrap();
+      // ⬇️ SET TOKEN NGAY TẠI ĐÂY
+      setAccessToken(result.access_token);
+      navigate("/");
     }
   };
+
+
+
   if (isLoading) {
     return <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
       <div className="text-center">
@@ -46,6 +54,7 @@ export default function LoginPage() {
       </div>
     </div>;
   }
+
   if (error) {
     return <div className="min-h-screen flex items-center justify-center bg-red-900 text-white">
       <div className="text-center p-6 bg-red-800 rounded-lg">
@@ -60,102 +69,104 @@ export default function LoginPage() {
       </div>
     </div>;
   }
+
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white">
       <div className="w-full max-w-md bg-gray-900/80 backdrop-blur-md rounded-2xl shadow-2xl p-8">
-        
-            {/* Logo + Title */}
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-tr from-green-400 via-orange-500 to-yellow-400 flex items-center justify-center">
-                <span className="text-2xl">👟</span>
-              </div>
-              <h1 className="text-3xl font-bold mt-4">
-                <span className="text-green-400">GenZ</span>{" "}
-                <span className="text-orange-400">Style</span>
-              </h1>
-              <p className="text-gray-400 text-sm mt-1">
-                Your Style • Your Step
-              </p>
-            </div>
 
-            {/* FORM */}
-            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-              {/* Email */}
-              <div>
-                <label className="block text-sm font-medium mb-1">Email Address</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-green-400 focus:outline-none"
-                />
-                {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
-              </div>
+        {/* Logo + Title */}
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-tr from-green-400 via-orange-500 to-yellow-400 flex items-center justify-center">
+            <span className="text-2xl">👟</span>
+          </div>
+          <h1 className="text-3xl font-bold mt-4">
+            <span className="text-green-400">GenZ</span>{" "}
+            <span className="text-orange-400">Style</span>
+          </h1>
+          <p className="text-gray-400 text-sm mt-1">
+            Your Style • Your Step
+          </p>
+        </div>
 
-              {/* Password */}
-              <div>
-                <label className="block text-sm font-medium mb-1">Password</label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-orange-400 focus:outline-none"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((p) => !p)}
-                    className="absolute right-3 top-2.5 text-gray-400 hover:text-white"
-                  >
-                    {showPassword ? "🙈" : "👁️"}
-                  </button>
-                </div>
-                {errors.password && (
-                  <p className="text-red-400 text-sm mt-1">{errors.password}</p>
-                )}
-              </div>
+        {/* FORM */}
+        <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+          {/* Email */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Email Address</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-green-400 focus:outline-none"
+            />
+            {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
+          </div>
 
-              {/* Options */}
-              <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name="remember"
-                    checked={formData.remember}
-                    onChange={handleChange}
-                    className="w-4 h-4 accent-green-400"
-                  />
-                  Remember Me
-                </label>
-                <a href="#" className="text-orange-400 hover:underline">
-                  Forgot Password?
-                </a>
-              </div>
-
-              {/* Submit */}
-              <button
-                type="submit"
-                className="w-full py-3 rounded-lg bg-gradient-to-r from-green-400 via-orange-500 to-yellow-400 font-semibold text-black hover:opacity-90 transition"
-              >
-                Login
-              </button>
+          {/* Password */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Password</label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+              />
               <button
                 type="button"
-                onClick={() => console.log("Login with Google")}
-                className="w-full mt-3 py-3 rounded-lg flex items-center justify-center gap-2 border border-gray-700 bg-gray-800 hover:bg-gray-700 transition"
+                onClick={() => setShowPassword((p) => !p)}
+                className="absolute right-3 top-2.5 text-gray-400 hover:text-white"
               >
-                <img
-                  src="https://www.svgrepo.com/show/355037/google.svg"
-                  alt="Google"
-                  className="w-5 h-5"
-                />
-                <span>Login with Google</span>
+                {showPassword ? "🙈" : "👁️"}
               </button>
-            </form>
-   
-        
+            </div>
+            {errors.password && (
+              <p className="text-red-400 text-sm mt-1">{errors.password}</p>
+            )}
+          </div>
+
+          {/* Options */}
+          <div className="flex items-center justify-between text-sm">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                name="remember"
+                checked={formData.remember}
+                onChange={handleChange}
+                className="w-4 h-4 accent-green-400"
+              />
+              Remember Me
+            </label>
+            <a href="#" className="text-orange-400 hover:underline">
+              Forgot Password?
+            </a>
+          </div>
+
+          {/* Submit */}
+          <button
+            type="submit"
+            className="w-full py-3 rounded-lg bg-gradient-to-r from-green-400 via-orange-500 to-yellow-400 font-semibold text-black hover:opacity-90 transition"
+          >
+            Login
+          </button>
+          <button
+            type="button"
+            onClick={() => console.log("Login with Google")}
+            className="w-full mt-3 py-3 rounded-lg flex items-center justify-center gap-2 border border-gray-700 bg-gray-800 hover:bg-gray-700 transition"
+          >
+            <img
+              src="https://www.svgrepo.com/show/355037/google.svg"
+              alt="Google"
+              className="w-5 h-5"
+            />
+            <span>Login with Google</span>
+          </button>
+        </form>
+
+
       </div>
     </div>
   );

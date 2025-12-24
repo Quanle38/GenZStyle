@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import BestSellingList from "../components/bestSellingList";
@@ -12,8 +13,8 @@ import type { Product } from "../types/product.type";
 
 export default function Shop() {
     type CateValue = "all" | "men" | "women" | "child" | "boy";
-
-    const cateData: { id: number; name: string; value: CateValue }[] = [
+    interface CateType { id: number; name: string; value: CateValue }
+    const cateData: CateType[] = [
         { id: 1, name: "All", value: "all" },
         { id: 2, name: "Men", value: "men" },
         { id: 3, name: "Women", value: "women" },
@@ -130,7 +131,7 @@ export default function Shop() {
                                                     const allCateExceptAll = cateData
                                                         .filter((c) => c.value !== "all")
                                                         .map((c) => c.value);
-                                                    if (allCateExceptAll.every((c) => newGroup.includes(c))) {
+                                                    if (allCateExceptAll.every((c) => newGroup.includes(c as any))) {
                                                         setCateGroup(["all"]);
                                                     } else {
                                                         setCateGroup(newGroup);

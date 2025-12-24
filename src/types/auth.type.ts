@@ -1,7 +1,9 @@
-// 1. Định nghĩa Interface cho dữ liệu Auth
+import type { UserData } from "../features/auth/authTypes";
+
 export interface AuthContextType {
   accessToken: string | null;
   setAccessToken: (token: string | null) => void;
   isAuthenticated: boolean;
-  logout : () => void;
+  logout: () => Promise<void>;
+  getUser: () => Promise<UserData | null>;
 }

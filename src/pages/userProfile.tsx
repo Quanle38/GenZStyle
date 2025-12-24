@@ -3,6 +3,9 @@ import { Tabs, Modal, Input, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { SecurityTab } from "../components/securityTab";
 import { UserProfileTab } from "../components/userProfileTab";
+import { useAuth } from "../hooks/useAuth";
+import type { UserData } from "../features/auth/authTypes";
+
 export default function UserProfile() {
 
     const [isDark, setIsDark] = useState<boolean>(false);
@@ -10,6 +13,13 @@ export default function UserProfile() {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [otpModalOpen, setOtpModalOpen] = useState(false);
     const [otpValue, setOtpValue] = useState("");
+    const { getUser } = useAuth();
+    const [user, setUser] = useState<UserData | null>(null);
+
+    useEffect(() => {
+        getUser().then(setUser);
+    }, []);
+
 
     useEffect(() => {
         // Check hệ thống có dark mode hay không
@@ -17,9 +27,6 @@ export default function UserProfile() {
             setIsDark(true);
         }
     }, []);
-
-   
-
     const handleOtpSubmit = () => {
         if (otpValue.length === 6) {
             message.success("OTP verified! ✅");
@@ -30,13 +37,13 @@ export default function UserProfile() {
             message.error("Please enter 6 digits OTP!");
         }
     };
-    
+
     const profileTab = (
-       <UserProfileTab errors={errors} setErrors={setErrors} key={2}/>
+        <UserProfileTab user={user} errors={errors} setErrors={setErrors} key={2} />
     );
 
     const securityTab = (
-       <SecurityTab errorPass={errorPass} setErrorPass={setErrorPass} setOtpModalOpen={setOtpModalOpen} key={1}/>
+        <SecurityTab errorPass={errorPass} setErrorPass={setErrorPass} setOtpModalOpen={setOtpModalOpen} key={1} />
     );
 
     return (
