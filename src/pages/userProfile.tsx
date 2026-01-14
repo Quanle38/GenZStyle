@@ -1,32 +1,17 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Tabs, Modal, Input, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { SecurityTab } from "../components/securityTab";
 import { UserProfileTab } from "../components/userProfileTab";
-import { useAuth } from "../hooks/useAuth";
-import type { UserData } from "../features/auth/authTypes";
+
 
 export default function UserProfile() {
 
-    const [isDark, setIsDark] = useState<boolean>(false);
     const [errorPass, setErrorPass] = useState<Record<string, string>>({});
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [otpModalOpen, setOtpModalOpen] = useState(false);
     const [otpValue, setOtpValue] = useState("");
-    const { getUser } = useAuth();
-    const [user, setUser] = useState<UserData | null>(null);
 
-    useEffect(() => {
-        getUser().then(setUser);
-    }, []);
-
-
-    useEffect(() => {
-        // Check hệ thống có dark mode hay không
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            setIsDark(true);
-        }
-    }, []);
     const handleOtpSubmit = () => {
         if (otpValue.length === 6) {
             message.success("OTP verified! ✅");
@@ -39,8 +24,8 @@ export default function UserProfile() {
     };
 
     const profileTab = (
-        <UserProfileTab user={user} errors={errors} setErrors={setErrors} key={2} />
-    );
+        <UserProfileTab errors={errors} setErrors={setErrors} key={2} />
+    )
 
     const securityTab = (
         <SecurityTab errorPass={errorPass} setErrorPass={setErrorPass} setOtpModalOpen={setOtpModalOpen} key={1} />
@@ -48,7 +33,7 @@ export default function UserProfile() {
 
     return (
         <div
-            className={`${isDark ? "dark" : ""} bg-gradient-to-r from-indigo-800 to-blue-900 min-h-screen flex items-center justify-center p-4`}
+            className={`dark bg-gradient-to-r from-indigo-800 to-blue-900 min-h-screen flex items-center justify-center p-4`}
         >
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-4xl w-full p-8 transition-all duration-300 animate-fade-in">
                 <Tabs

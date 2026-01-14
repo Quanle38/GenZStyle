@@ -1,24 +1,88 @@
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import * as yup from "yup";
-import type { UserData } from "../features/auth/authTypes";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import type { Gender, Membership } from "../features/auth/authTypes";
+import { formatDate } from "../utils/dayFormat";
+import { getUserThunk, updateUserThunk } from "../features/user/userSlice";
+import type { UpdateRequestBodyUser } from "../features/user/userTypes";
+import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 interface IUserProfileTab {
     errors: Record<string, string>;
     setErrors: Dispatch<SetStateAction<Record<string, string>>>;
-    user : UserData | null;
 }
 
-export function UserProfileTab({ errors, setErrors, user }: IUserProfileTab) {
+export type ProfileForm = {
+    first_name: string;
+    last_name: string;
+    birthday: string;
+    gender: Gender;
+    email: string;
+    phone: string;
+    membership: Membership;
+    avatar: string;
+};
+
+
+export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
     const [isEdit, setIsEdit] = useState<boolean>(false);
-    const [form, setForm] = useState({
-        first_name: user?.first_name || "Unknow",
-        last_name: user?.last_name || "Unknow",
-        birthday: user?.dob || "Unknow",
-        gender: user?.gender.toUpperCase() || "MALE",
-        email: user?.email || "Unknow",
-        phone: user?.phone_number || "Unknow",
-        membership : user?.membership_id || "BROZE"
+    const [form, setForm] = useState<ProfileForm>({
+        first_name: "Unknow",
+        last_name: "Unknow",
+        birthday: "Unknow",
+        gender: "MALE",
+        email: "Unknow",
+        phone: "Unknow",
+        membership: "BRONZE",
+        avatar: " ",
     });
+    const { user, isLoading } = useAppSelector((state) => state.user)
+    const [editAbleForm, setEditAbleForm] = useState<ProfileForm>(form)
+    const dispatch = useAppDispatch();
+    const { userInfo } = useAuth();
+    const navigate = useNavigate();
+    const getUserProfile = async (id: string) => {
+        await dispatch(getUserThunk(id));
+    }
+    // ===== FETCH USER =====
+    useEffect(() => {
+        if (!userInfo?.id) return;
+        getUserProfile(userInfo.id);
+        
+    }, [userInfo?.id]);
+
+    // ===== SYNC REDUX → FORM =====
+    useEffect(() => {
+        if (!user) return;
+
+        const mapped: ProfileForm = {
+            first_name: user.first_name ?? "Unknown",
+            last_name: user.last_name ?? "Unknown",
+            birthday: user.dob ?? "",
+            gender: user.gender ?? "MALE",
+            email: user.email ?? "",
+            phone: user.phone_number ?? "",
+            membership: user.membership_id ?? "BRONZE",
+            avatar: user.avatar ?? "",
+        };
+
+        setForm(mapped);
+        setEditAbleForm(mapped);
+    }, [user]);
+
+    // ===== SAVE USER =====
+    const saveUser = async () => {
+        const payload: UpdateRequestBodyUser = {
+            first_name: editAbleForm.first_name,
+            last_name: editAbleForm.last_name,
+            dob: new Date(editAbleForm.birthday),
+            phone_number: editAbleForm.phone,
+            gender: editAbleForm.gender,
+        };
+        await dispatch(updateUserThunk(payload));
+    };
+
 
     const today = new Date();
     const minBirthDate = new Date(
@@ -35,15 +99,6 @@ export function UserProfileTab({ errors, setErrors, user }: IUserProfileTab) {
             .trim(),
         last_name: yup.string().required("Required").trim(),
         email: yup.string().required("Required").email("Email invalid").trim(),
-        password: yup
-            .string()
-            .required("Password required")
-            .min(6, "At least 6 characters")
-            .trim(),
-        confirm_password: yup
-            .string()
-            .required("Please confirm password")
-            .oneOf([yup.ref("password")], "Passwords must match"),
         birthday: yup
             .date()
             .required("Birthday required")
@@ -61,21 +116,26 @@ export function UserProfileTab({ errors, setErrors, user }: IUserProfileTab) {
                 return true;
             }),
         phone: yup.string().required("Please enter your PhoneNumber !").trim()
-            .matches(/^(?:\+84|0)(3|5|7|8|9)\d{8}$/, "Invalid Vietnamese phone number"),
-        address: yup.string().required("Please Enter Your Address !").trim()
+            .matches(/^(?:\+84|0)(3|5|7|8|9)\d{8}$/, "Invalid Vietnamese phone number")
     });
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
         const { name, value } = e.target;
-        setForm((prev) => ({ ...prev, [name]: value }));
+
+        setEditAbleForm((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
     };
+
 
     const handleSubmit = async () => {
         try {
-            await schema.validate(form, { abortEarly: false });
+            await schema.validate(editAbleForm, { abortEarly: false });
             setErrors({});
-            console.log("✅ Form submitted:", form);
+            console.log("✅ Form submitted:", editAbleForm);
+            await saveUser();
             setIsEdit(false);
         } catch (err) {
             if (err instanceof yup.ValidationError) {
@@ -88,38 +148,85 @@ export function UserProfileTab({ errors, setErrors, user }: IUserProfileTab) {
 
             }
         }
-        
+    };
+    const [open, setOpen] = useState(false);
+    const [avatar, setAvatar] = useState("https://i.pravatar.cc/300");
+
+    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setAvatar(URL.createObjectURL(file));
     };
 
+    const handleSave = () => {
+        console.log("Submit form:", editAbleForm);
+        if (editAbleForm.avatar) {
+            console.log("Avatar file:", editAbleForm.avatar);
+        }
+        setIsEdit(false);
+    };
 
     return (
-       
-        <div >
-             <form name="form_edit" className="flex flex-col md:flex-row"  onSubmit={(e)=>{
-                 setIsEdit(true);
-                 e.preventDefault();
-                 handleSubmit();
-            }}>
-            {/* Left section */}
-            <div className="md:w-1/3 text-center mb-8 md:mb-0">
-                <img
-                    src="https://i.pravatar.cc/300"
-                    alt="Profile"
-                    className="rounded-full w-48 h-48 mx-auto mb-4 border-4 border-indigo-800 dark:border-blue-900 transition-transform duration-300 hover:scale-105"
-                />
-                <h1 className="text-2xl font-bold text-indigo-800 dark:text-white mb-2">
-                    {form.first_name}, {form.last_name}
-                </h1>
-                <p className="text-gray-600 dark:text-gray-300"></p>
-                <button
-                    className="mt-4 bg-indigo-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900 transition-colors duration-300"
-                >
-                    {!isEdit ? "Edit Profile" : "Save Changes"}
-                </button>
-            </div>
 
-            {/* Right section */}
-            
+        <div >
+            <form name="form_edit" className="flex flex-col md:flex-row" onSubmit={(e) => {
+                setIsEdit(!isEdit);
+                e.preventDefault();
+                if (isEdit) {
+                    handleSubmit()
+                }
+
+            }}>
+                {/* Left section */}
+                <div className="md:w-1/3 text-center mb-8 md:mb-0">
+                    {/* Avatar */}
+                    <div
+                        className="relative w-48 h-48 mx-auto mb-4 group cursor-pointer"
+                        onClick={() => setOpen(true)}
+                    >
+                        <img
+                            src={avatar}
+                            alt="Profile"
+                            className="rounded-full w-48 h-48 object-cover border-4 
+                 border-indigo-800 dark:border-blue-900 
+                 transition-all duration-300 group-hover:opacity-40"
+                        />
+
+                        {/* Overlay */}
+                        <div
+                            className="absolute inset-0 flex items-center justify-center 
+                 text-white font-semibold text-sm 
+                 opacity-0 group-hover:opacity-100 
+                 transition-opacity duration-300"
+                        >
+                            Thay đổi ảnh đại diện
+                        </div>
+                    </div>
+
+                    {/* Name */}
+                    <h1 className="text-2xl font-bold text-indigo-800 dark:text-white mb-2">
+                        {editAbleForm.first_name}, {editAbleForm.last_name}
+                    </h1>
+
+                    <p className="text-gray-600 dark:text-gray-300"></p>
+
+                    {/* Edit / Save button */}
+                    <button
+                        onClick={() => {
+                            if (!isEdit) return;
+                            handleSubmit();
+                        }}
+                        className="mt-4 bg-indigo-800 text-white px-4 py-2 rounded-lg 
+               hover:bg-blue-900 transition-colors duration-300"
+                    >
+                        {!isEdit ? "Edit Profile" : "Save Changes"}
+                    </button>
+                </div>
+
+
+                {/* Right section */}
+
                 <div className="md:w-2/3 md:pl-8" >
                     <h2 className="text-xl font-semibold text-indigo-800 dark:text-white mb-4">
                         Contact Information
@@ -136,17 +243,7 @@ export function UserProfileTab({ errors, setErrors, user }: IUserProfileTab) {
                                 <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                                 <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                             </svg>
-                            {isEdit ? (
-                                <input
-                                    type="email"
-                                    defaultValue="john.doe@example.com"
-                                    className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
-                  bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
-                  focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
-                                />
-                            ) : (
-                                <p>{form.email}</p>
-                            )}
+                            <p>{editAbleForm.email}</p>
                         </li>
 
                         {/* Phone */}
@@ -162,13 +259,14 @@ export function UserProfileTab({ errors, setErrors, user }: IUserProfileTab) {
                             {isEdit ? (
                                 <input
                                     type="text"
-                                    defaultValue="+1 (555) 123-4567"
+                                    onChange={(e) => handleChange(e)}
+                                    defaultValue={editAbleForm.phone}
                                     className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
                   bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
                   focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                                 />
                             ) : (
-                                <p>{form.phone}</p>
+                                <p>{editAbleForm.phone}</p>
                             )}
                         </li>
                     </ul>
@@ -184,24 +282,22 @@ export function UserProfileTab({ errors, setErrors, user }: IUserProfileTab) {
                             {isEdit ? (
                                 <input
                                     type="text"
-                                    value={form.first_name}
-                                    onChange={(e) =>
-                                        setForm({ ...form, first_name: e.target.value })
-                                    }
+                                    defaultValue={editAbleForm.first_name}
+                                    onChange={(e) => handleChange(e)}
                                     className="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
                   bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
                   focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                                 />
                             ) : (
-                                <p>{form.first_name || "John"}</p>
+                                <p>{editAbleForm.first_name || "John"}</p>
                             )}
                         </li>
-                         <li>
-                               {errors.firtst && (
-                                      <>
-                                      <p className="mt-1 text-sm text-red-500 block">{errors.address}</p>
-                                      </>
-                                    )}
+                        <li>
+                            {errors.firtst && (
+                                <>
+                                    <p className="mt-1 text-sm text-red-500 block">{errors.address}</p>
+                                </>
+                            )}
                         </li>
 
                         {/* Last Name */}
@@ -210,16 +306,14 @@ export function UserProfileTab({ errors, setErrors, user }: IUserProfileTab) {
                             {isEdit ? (
                                 <input
                                     type="text"
-                                    value={form.last_name}
-                                    onChange={(e) =>
-                                        setForm({ ...form, last_name: e.target.value })
-                                    }
+                                    defaultValue={editAbleForm.last_name}
+                                    onChange={(e) => handleChange(e)}
                                     className="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
                   bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
                   focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                                 />
                             ) : (
-                                <p>{form.last_name || "Doe"}</p>
+                                <p>{editAbleForm.last_name || "Doe"}</p>
                             )}
                         </li>
 
@@ -229,16 +323,14 @@ export function UserProfileTab({ errors, setErrors, user }: IUserProfileTab) {
                             {isEdit ? (
                                 <input
                                     type="date"
-                                    value={form.birthday}
-                                    onChange={(e) =>
-                                        setForm({ ...form, birthday: e.target.value })
-                                    }
+                                    defaultValue={editAbleForm.birthday}
+                                    onChange={(e) => handleChange(e)}
                                     className="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
                   bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
                   focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                                 />
                             ) : (
-                                <p>{form.birthday || "1995-05-10"}</p>
+                                <p>{formatDate(editAbleForm.birthday) || "1995-05-10"}</p>
                             )}
                         </li>
 
@@ -247,19 +339,17 @@ export function UserProfileTab({ errors, setErrors, user }: IUserProfileTab) {
                             <span className="w-28 font-medium">Gender:</span>
                             {isEdit ? (
                                 <select
-                                    value={form.gender}
-                                    onChange={(e) =>
-                                        setForm({ ...form, gender: e.target.value })
-                                    }
+                                    defaultValue={editAbleForm.gender}
+                                    onChange={(e) => handleChange(e)}
                                     className="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
                   bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
                   focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                                 >
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
+                                    <option value="MALE">Male</option>
+                                    <option value="FEMALE">Female</option>
                                 </select>
                             ) : (
-                                <p className="capitalize">{form.gender}</p>
+                                <p className="capitalize">{editAbleForm.gender}</p>
                             )}
                         </li>
                     </ul>
@@ -276,6 +366,47 @@ export function UserProfileTab({ errors, setErrors, user }: IUserProfileTab) {
                     )}
                 </div>
             </form>
+            {open && (
+                <div
+                    className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center"
+                    onClick={() => setOpen(false)}
+                >
+                    <div
+                        className="relative bg-white dark:bg-gray-800 rounded-xl p-6 max-w-sm w-full"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Close */}
+                        <button
+                            onClick={() => setOpen(false)}
+                            className="absolute top-2 right-2 text-gray-500 hover:text-red-500"
+                        >
+                            ✕
+                        </button>
+
+                        {/* Big avatar */}
+                        <img
+                            src={avatar}
+                            alt="Profile"
+                            className="w-64 h-64 rounded-full mx-auto object-cover mb-4"
+                        />
+
+                        {/* Change avatar */}
+                        <label className="block text-center">
+                            <span className="inline-block px-4 py-2 bg-indigo-600 text-white 
+                         rounded-lg cursor-pointer hover:bg-indigo-700">
+                                Thay đổi ảnh
+                            </span>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                hidden
+                                onChange={handleAvatarChange}
+                            />
+                        </label>
+                    </div>
+                </div>
+            )}
+
         </div>
     )
 }

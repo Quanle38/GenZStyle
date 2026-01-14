@@ -34,7 +34,7 @@ const processQueue = (error: AxiosError | null, token: string | null = null) => 
 
 const refreshAccessToken = async (): Promise<string> => {
     try {
-        const response = await axios.post(`${API_URL}/api/v1/auth/refresh`, {}, { withCredentials: true });
+        const response = await axios.post(`${API_URL}/api/v1/auth/refreshToken`, {}, { withCredentials: true });
         const newAccessToken = response.data.data.access_token; 
         setRefreshToken(newAccessToken);
         return newAccessToken;

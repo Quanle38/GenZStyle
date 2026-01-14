@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { AuthData, LoginRequest, UserData } from "./authTypes";
 import { authAPI } from "./authAPI";
-import type { AxiosError } from "axios";
 import { removeToken, setRefreshToken, setToken } from "../../utils/cookie";
+import { extractErrorMessage } from "../../utils/extractErrorMessage";
 
 
 
@@ -18,34 +18,6 @@ const initialState: AuthState = {
     error: null
 };
 
-// ⛔ Hàm xử lý lỗi chung cho cả login + register
-const extractErrorMessage = (error: unknown): { message: string; status: number } => {
-    const axiosError = error as AxiosError<{
-        message?: string;
-        error?: string;
-        errors?: string[];
-        detail?: string;
-    }>;
-
-    let message = "Request failed";
-    const status = axiosError.response?.status || 500;
-
-    const data = axiosError.response?.data;
-
-    if (data) {
-        message =
-            data.message ||
-            data.error ||
-            data.errors?.join(", ") ||
-            data.detail ||
-            axiosError.message ||
-            message;
-    } else {
-        message = axiosError.message || message;
-    }
-
-    return { message, status };
-};
 
 // 🔥 LOGIN
 const loginThunk = createAsyncThunk(

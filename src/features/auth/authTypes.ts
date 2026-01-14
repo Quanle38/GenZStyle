@@ -16,8 +16,18 @@ export interface UserData {
     avatar: string | null;
     created_at: string;
     updated_at: string;
-    membership_id: string;
+    membership_id: Membership;
 }
+
+export type Gender = "MALE" | "FEMALE";
+
+export type Membership =
+  | "BRONZE"
+  | "SILVER"
+  | "GOLD"
+  | "PLATINUM"
+  | "VIP";
+
 
 export interface AuthData {
     access_token: string;

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { loginThunk } from "../features/auth/authSlice";
+import { loginThunk} from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
@@ -43,8 +43,6 @@ export default function LoginPage() {
       navigate("/");
     }
   };
-
-
 
   if (isLoading) {
     return <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">

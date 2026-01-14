@@ -8,14 +8,13 @@ import type { UserData } from "../features/auth/authTypes";
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [accessToken, setAccessTokenState] = useState<null | string>(null);
+  const [accessToken, setAccessTokenState] = useState<string | null>(null);
   const [userInfo, setUserInfo] = useState<UserData | null>(null);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     const initAuth = async () => {
       const token = getToken();
-
       if (!token) return;
 
       setAccessTokenState(token);
@@ -23,13 +22,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         const user = await dispatch(meThunk()).unwrap();
         setUserInfo(user);
-      } catch (err) {
-        console.error("Get user failed", err);
+      } catch {
         setUserInfo(null);
+        removeToken();
+        setAccessTokenState(null);
       }
     };
+
     initAuth();
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (!accessToken) {
@@ -37,43 +38,40 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [accessToken]);
 
-  const getUser = async () => {
+  const getUser = async (): Promise<UserData | null> => {
     try {
       const user = await dispatch(meThunk()).unwrap();
-      setUserInfo(user); // ✅ GHI ĐÈ
       return user ?? null;
     } catch {
-      setUserInfo(null);
       return null;
     }
   };
 
-
-
   const setAccessToken = (token: string | null) => {
     setAccessTokenState(token);
+    if (token) setToken(token);
+    else removeToken();
+  };
 
-    if (token) {
-      setToken(token);
-    } else {
-      removeToken();
+  const logout = async () => {
+    try {
+      await dispatch(logoutThunk()).unwrap();
+    } finally {
+      setAccessToken(null);
+      window.location.reload();
     }
   };
-  const logout = async () => {
-    await dispatch(logoutThunk())
-    setAccessToken(null);
-    window.location.reload();
-  };
 
-    const value = useMemo(
+  const value = useMemo(
     () => ({
       accessToken,
       setAccessToken,
       isAuthenticated: !!accessToken,
+      userInfo,
       logout,
-      getUser
+      getUser,
     }),
-    [accessToken]
+    [accessToken, userInfo]
   );
 
   return (
