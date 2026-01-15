@@ -35,12 +35,14 @@ export const getUserThunk = createAsyncThunk(
 );
 
 // 🔥 UPDATE USER
-export const updateUserThunk = createAsyncThunk(
+export const updateUserThunk = createAsyncThunk<
+  UserProfile,
+  { id: string; body: UpdateRequestBodyUser }
+>(
   "user/update",
-  async (body: UpdateRequestBodyUser, thunkAPI) => {
+  async ({ id, body }, thunkAPI) => {
     try {
-      const response = await userAPI.update(body);
-      console.log(response.data.data);
+      const response = await userAPI.update(id, body);
       return response.data.data as UserProfile;
     } catch (error) {
       return thunkAPI.rejectWithValue(extractErrorMessage(error));

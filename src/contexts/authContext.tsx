@@ -8,17 +8,18 @@ import type { UserData } from "../features/auth/authTypes";
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [accessToken, setAccessTokenState] = useState<string | null>(null);
+  const [accessToken, setAccessTokenState] = useState<string | null>(getToken());
   const [userInfo, setUserInfo] = useState<UserData | null>(null);
   const dispatch = useAppDispatch();
 
+
   useEffect(() => {
-    const initAuth = async () => {
-      const token = getToken();
-      if (!token) return;
+    if (!accessToken) {
+      setUserInfo(null);
+      return;
+    }
 
-      setAccessTokenState(token);
-
+    const fetchMe = async () => {
       try {
         const user = await dispatch(meThunk()).unwrap();
         setUserInfo(user);
@@ -29,23 +30,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
-    initAuth();
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (!accessToken) {
-      setUserInfo(null);
-    }
-  }, [accessToken]);
-
-  const getUser = async (): Promise<UserData | null> => {
-    try {
-      const user = await dispatch(meThunk()).unwrap();
-      return user ?? null;
-    } catch {
-      return null;
-    }
-  };
+    fetchMe();
+  }, [accessToken, dispatch]);
 
   const setAccessToken = (token: string | null) => {
     setAccessTokenState(token);
@@ -56,6 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = async () => {
     try {
       await dispatch(logoutThunk()).unwrap();
+      
     } finally {
       setAccessToken(null);
       window.location.reload();
@@ -69,7 +56,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       isAuthenticated: !!accessToken,
       userInfo,
       logout,
-      getUser,
     }),
     [accessToken, userInfo]
   );

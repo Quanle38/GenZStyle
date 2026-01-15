@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import * as yup from "yup";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
@@ -6,7 +8,7 @@ import { formatDate } from "../utils/dayFormat";
 import { getUserThunk, updateUserThunk } from "../features/user/userSlice";
 import type { UpdateRequestBodyUser } from "../features/user/userTypes";
 import { useAuth } from "../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNotificationContext } from "../contexts/notificationContext";
 
 interface IUserProfileTab {
     errors: Record<string, string>;
@@ -21,7 +23,7 @@ export type ProfileForm = {
     email: string;
     phone: string;
     membership: Membership;
-    avatar: string;
+    avatar: File | string | null;
 };
 
 
@@ -35,22 +37,20 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
         email: "Unknow",
         phone: "Unknow",
         membership: "BRONZE",
-        avatar: " ",
+        avatar: null,
     });
     const { user, isLoading } = useAppSelector((state) => state.user)
     const [editAbleForm, setEditAbleForm] = useState<ProfileForm>(form)
     const dispatch = useAppDispatch();
     const { userInfo } = useAuth();
-    const navigate = useNavigate();
-    const getUserProfile = async (id: string) => {
-        await dispatch(getUserThunk(id));
-    }
+
+
     // ===== FETCH USER =====
     useEffect(() => {
         if (!userInfo?.id) return;
-        getUserProfile(userInfo.id);
-        
-    }, [userInfo?.id]);
+        dispatch(getUserThunk(userInfo.id));
+
+    }, [userInfo?.id, dispatch]);
 
     // ===== SYNC REDUX → FORM =====
     useEffect(() => {
@@ -59,20 +59,23 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
         const mapped: ProfileForm = {
             first_name: user.first_name ?? "Unknown",
             last_name: user.last_name ?? "Unknown",
-            birthday: user.dob ?? "",
+            birthday: user.dob ? user.dob.slice(0, 10) : "",
             gender: user.gender ?? "MALE",
             email: user.email ?? "",
             phone: user.phone_number ?? "",
             membership: user.membership_id ?? "BRONZE",
             avatar: user.avatar ?? "",
         };
-
+        console.log("mapped", mapped.birthday);
         setForm(mapped);
         setEditAbleForm(mapped);
     }, [user]);
 
+    const { notify } = useNotificationContext();
     // ===== SAVE USER =====
     const saveUser = async () => {
+        if (!user) return;
+
         const payload: UpdateRequestBodyUser = {
             first_name: editAbleForm.first_name,
             last_name: editAbleForm.last_name,
@@ -80,7 +83,18 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
             phone_number: editAbleForm.phone,
             gender: editAbleForm.gender,
         };
-        await dispatch(updateUserThunk(payload));
+        try {
+            await dispatch(
+                updateUserThunk({
+                    id: user.id,
+                    body: payload,
+                })
+            ).unwrap();
+
+            notify("Updated Successfully");
+        } catch (error: any) {
+            notify("Update Failed");
+        }
     };
 
 
@@ -102,14 +116,14 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
         birthday: yup
             .date()
             .required("Birthday required")
-            .test("birthday-check", "Invalid birthday", (value, ctx) => {
-                if (!value) return false;
+            .test("birthday-check", "Invalid birthday", (defaultValue, ctx) => {
+                if (!defaultValue) return false;
 
-                if (value > today) {
+                if (defaultValue > today) {
                     return ctx.createError({ message: "Birthday cannot be in the future" });
                 }
 
-                if (value > minBirthDate) {
+                if (defaultValue > minBirthDate) {
                     return ctx.createError({ message: "You must be at least 16 years old" });
                 }
 
@@ -122,7 +136,7 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
         const { name, value } = e.target;
-
+        console.log(value)
         setEditAbleForm((prev) => ({
             ...prev,
             [name]: value,
@@ -133,6 +147,8 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
     const handleSubmit = async () => {
         try {
             await schema.validate(editAbleForm, { abortEarly: false });
+
+
             setErrors({});
             console.log("✅ Form submitted:", editAbleForm);
             await saveUser();
@@ -150,22 +166,48 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
         }
     };
     const [open, setOpen] = useState(false);
-    const [avatar, setAvatar] = useState("https://i.pravatar.cc/300");
+
+    useEffect(() => {
+        if (!(editAbleForm.avatar instanceof File)) return;
+
+        const url = URL.createObjectURL(editAbleForm.avatar);
+        return () => URL.revokeObjectURL(url);
+    }, [editAbleForm.avatar]);
 
     const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        setAvatar(URL.createObjectURL(file));
+        // optional validate
+        if (!file.type.startsWith("image/")) {
+            notify("Invalid image file");
+            return;
+        }
+
+        if (file.size > 2 * 1024 * 1024) {
+            notify("Image must be under 2MB");
+            return;
+        }
+
+        setEditAbleForm((prev) => ({
+            ...prev,
+            avatar: file,
+        }));
     };
 
-    const handleSave = () => {
-        console.log("Submit form:", editAbleForm);
-        if (editAbleForm.avatar) {
-            console.log("Avatar file:", editAbleForm.avatar);
-        }
-        setIsEdit(false);
-    };
+
+    if (isLoading || !user) {
+        return (
+            <div className="w-48 h-48 rounded-full bg-gray-300 dark:bg-gray-700 mb-4 
+                flex items-center justify-center">
+                <div className="w-10 h-10 
+                  border-4 border-indigo-500 
+                  border-t-transparent 
+                  rounded-full 
+                  animate-spin" />
+            </div>
+        )
+    }
 
     return (
 
@@ -181,29 +223,40 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
                 {/* Left section */}
                 <div className="md:w-1/3 text-center mb-8 md:mb-0">
                     {/* Avatar */}
-                    <div
-                        className="relative w-48 h-48 mx-auto mb-4 group cursor-pointer"
-                        onClick={() => setOpen(true)}
-                    >
-                        <img
-                            src={avatar}
-                            alt="Profile"
-                            className="rounded-full w-48 h-48 object-cover border-4 
-                 border-indigo-800 dark:border-blue-900 
-                 transition-all duration-300 group-hover:opacity-40"
-                        />
-
-                        {/* Overlay */}
+                    <div className="relative w-48 h-48 mx-auto mb-4 group">
                         <div
-                            className="absolute inset-0 flex items-center justify-center 
-                 text-white font-semibold text-sm 
-                 opacity-0 group-hover:opacity-100 
-                 transition-opacity duration-300"
+                            className={`w-full h-full rounded-full ${isEdit ? "cursor-pointer" : "cursor-default"
+                                }`}
+                            onClick={() => {
+                                if (isEdit) setOpen(true);
+                            }}
                         >
-                            Thay đổi ảnh đại diện
+                            <img
+                                src={
+                                    editAbleForm.avatar instanceof File
+                                        ? URL.createObjectURL(editAbleForm.avatar)
+                                        : editAbleForm.avatar || "/default-avatar.png"
+                                }
+                                alt="Profile"
+                                className={`rounded-full w-48 h-48 object-cover border-4 
+        border-indigo-800 dark:border-blue-900 
+        transition-all duration-300
+        ${isEdit ? "group-hover:opacity-40" : ""}`}
+                            />
+
+                            {/* Overlay chỉ khi edit */}
+                            {isEdit && (
+                                <div
+                                    className="absolute inset-0 flex items-center justify-center 
+        text-white font-semibold text-sm 
+        opacity-0 group-hover:opacity-100 
+        transition-opacity duration-300"
+                                >
+                                    Change Avatar
+                                </div>
+                            )}
                         </div>
                     </div>
-
                     {/* Name */}
                     <h1 className="text-2xl font-bold text-indigo-800 dark:text-white mb-2">
                         {editAbleForm.first_name}, {editAbleForm.last_name}
@@ -258,6 +311,7 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
                             </svg>
                             {isEdit ? (
                                 <input
+                                    name="phone"
                                     type="text"
                                     onChange={(e) => handleChange(e)}
                                     defaultValue={editAbleForm.phone}
@@ -281,6 +335,7 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
                             <span className="w-28 font-medium">First Name:</span>
                             {isEdit ? (
                                 <input
+                                    name="first_name"
                                     type="text"
                                     defaultValue={editAbleForm.first_name}
                                     onChange={(e) => handleChange(e)}
@@ -305,6 +360,7 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
                             <span className="w-28 font-medium">Last Name:</span>
                             {isEdit ? (
                                 <input
+                                    name="last_name"
                                     type="text"
                                     defaultValue={editAbleForm.last_name}
                                     onChange={(e) => handleChange(e)}
@@ -322,6 +378,7 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
                             <span className="w-28 font-medium">Birthday:</span>
                             {isEdit ? (
                                 <input
+                                    name="birthday"
                                     type="date"
                                     defaultValue={editAbleForm.birthday}
                                     onChange={(e) => handleChange(e)}
@@ -345,8 +402,8 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
                   bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
                   focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                                 >
-                                    <option value="MALE">Male</option>
-                                    <option value="FEMALE">Female</option>
+                                    <option defaultValue="MALE">Male</option>
+                                    <option defaultValue="FEMALE">Female</option>
                                 </select>
                             ) : (
                                 <p className="capitalize">{editAbleForm.gender}</p>
@@ -366,7 +423,7 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
                     )}
                 </div>
             </form>
-            {open && (
+            {open && isEdit && (
                 <div
                     className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center"
                     onClick={() => setOpen(false)}
@@ -375,7 +432,6 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
                         className="relative bg-white dark:bg-gray-800 rounded-xl p-6 max-w-sm w-full"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Close */}
                         <button
                             onClick={() => setOpen(false)}
                             className="absolute top-2 right-2 text-gray-500 hover:text-red-500"
@@ -383,23 +439,32 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
                             ✕
                         </button>
 
-                        {/* Big avatar */}
                         <img
-                            src={avatar}
+                            src={
+                                editAbleForm.avatar instanceof File
+                                    ? URL.createObjectURL(editAbleForm.avatar)
+                                    : editAbleForm.avatar || "/default-avatar.png"
+                            }
                             alt="Profile"
                             className="w-64 h-64 rounded-full mx-auto object-cover mb-4"
                         />
 
-                        {/* Change avatar */}
                         <label className="block text-center">
-                            <span className="inline-block px-4 py-2 bg-indigo-600 text-white 
-                         rounded-lg cursor-pointer hover:bg-indigo-700">
+                            <span
+                                className={`inline-block px-4 py-2 rounded-lg text-white
+            ${isEdit
+                                        ? "bg-indigo-600 cursor-pointer hover:bg-indigo-700"
+                                        : "bg-gray-400 cursor-not-allowed"
+                                    }`}
+                            >
                                 Thay đổi ảnh
                             </span>
+
                             <input
                                 type="file"
                                 accept="image/*"
                                 hidden
+                                disabled={!isEdit}
                                 onChange={handleAvatarChange}
                             />
                         </label>

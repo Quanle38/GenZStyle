@@ -6,5 +6,4 @@ export interface AuthContextType {
   isAuthenticated: boolean;
   userInfo: UserData | null;
   logout: () => Promise<void>;
-  getUser: () => Promise<UserData | null>;
 }

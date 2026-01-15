@@ -5,8 +5,8 @@ import type { DataResponse, UserData } from "../auth/authTypes";
 import { userURL } from "./userURL";
 
 export const userAPI = {
-    update: (body: UpdateRequestBodyUser) : Promise<AxiosResponse<DataResponse<UserData>>> => {
-        return axiosInstance.post(userURL.UPDATE, body);
+    update: (id : string ,body: UpdateRequestBodyUser) : Promise<AxiosResponse<DataResponse<UserData>>> => {
+        return axiosInstance.patch(userURL.UPDATE + `/${id}`, body);
     },
     getProfile: (id : string) : Promise<AxiosResponse<DataResponse<UserData>>> => {
         return axiosInstance.get(userURL.GET_USER + `/${id}`);
