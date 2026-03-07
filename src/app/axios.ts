@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
-import { getToken, removeToken, setRefreshToken } from '../utils/cookie'
+import { getToken, removeToken, setCookie} from '../utils/cookie'
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000"
 
@@ -36,7 +36,8 @@ const refreshAccessToken = async (): Promise<string> => {
     try {
         const response = await axios.post(`${API_URL}/api/v1/auth/refreshToken`, {}, { withCredentials: true });
         const newAccessToken = response.data.data.access_token; 
-        setRefreshToken(newAccessToken);
+        setCookie("accessToken",newAccessToken,7);
+        window.dispatchEvent(new Event("auth:token-refresh"))
         return newAccessToken;
     } catch (refreshError) {
         removeToken();

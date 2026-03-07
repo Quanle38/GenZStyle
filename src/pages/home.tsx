@@ -3,6 +3,7 @@ import BestSelling from "../components/bestSelling";
 import { HeroSection } from "../components/heroSection";
 import { PopularProducts } from "../components/popularProduct";
 import { ReviewCarousel } from "../components/reviewCarousel";
+import StoreLocation from "../components/StoreLocation";
 
 export default function Home(){
     return(
@@ -12,6 +13,7 @@ export default function Home(){
         <BannerCarousel/>
         <BestSelling/>
         <ReviewCarousel/>
+        <StoreLocation/>
         </div>     
     )
 }

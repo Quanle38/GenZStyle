@@ -4,7 +4,7 @@ export interface UpdateRequestBodyUser {
     dob?: Date; 
     phone_number?: string;
     gender?: string;
-    avatar? : string;
+    file : string | null | File;
 }
 
 export interface UserProfile {

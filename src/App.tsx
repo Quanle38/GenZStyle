@@ -8,6 +8,12 @@ import UserProfile from './pages/userProfile'
 import Cart from './pages/cart'
 import ProductPage from './pages/detail'
 import ProtectedRoute from './routes/protectedRoute'
+import PaymentPage from './pages/payment'
+import { AccountManagement } from './components/accountManagement'
+import OrderHistoryPage from './pages/orderHistory'
+import CouponManagement from './components/couponManagement'
+import AdminLayout from './components/layouts/adminLayout'
+import OverViewPage from './pages/overView'
 
 
 function App() {
@@ -16,17 +22,31 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
+
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/shop" element={<Shop />} />
           </Route>
+
+
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/product/:id" element={<ProductPage />} />
+          <Route path="/history" element={<OrderHistoryPage/>} />
 
+          
+          <Route path='/admin' element={<AdminLayout />}>
+           <Route path="overview" element={<OverViewPage/>} />
+          <Route path="coupon" element={<CouponManagement/>} />
+          <Route path="account" element={<AccountManagement/>} />
+          </Route>
+
+          
           <Route element={<ProtectedRoute/>}>
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/payment" element={<PaymentPage />} />
+
           </Route>
         </Routes>
       </BrowserRouter>

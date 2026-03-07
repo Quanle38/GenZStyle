@@ -38,5 +38,19 @@
                 "woman": "Nữ",
                 "boy": "Trai",
                 "child": "Trẻ Em"
+        },
+        "map": {
+                "title": "Vị trí cửa hàng",
+                "storeName": "Cửa hàng GenZStyle",
+                "description": "Ghé thăm cửa hàng của chúng tôi để trải nghiệm trực tiếp các mẫu giày thời trang mới nhất dành cho giới trẻ.",
+                "address": "828 Sư Vạn Hạnh, Phường 12, Quận 10, TP. Hồ Chí Minh, Việt Nam",
+                "openingHours": "09:00 – 22:00 (Hàng ngày)",
+                "hotline": "0900 123 456",
+                "viewOnMap": "Xem trên Google Maps",
+                "labels": {
+                        "address": "Địa chỉ",
+                        "openingHours": "Giờ mở cửa",
+                        "hotline": "Hotline"
+                }
         }
 }

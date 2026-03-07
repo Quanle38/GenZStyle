@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { Tabs, Modal, Input, message } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { UserOutlined, LockOutlined, EnvironmentOutlined } from "@ant-design/icons";
 import { SecurityTab } from "../components/securityTab";
 import { UserProfileTab } from "../components/userProfileTab";
-
+import { AddressTab } from "../components/addressTab"; // Component mới tạo
 
 export default function UserProfile() {
-
+    // Quản lý lỗi cho tab Profile và Security
     const [errorPass, setErrorPass] = useState<Record<string, string>>({});
     const [errors, setErrors] = useState<Record<string, string>>({});
+    
+    // Quản lý Modal OTP cho tab Security
     const [otpModalOpen, setOtpModalOpen] = useState(false);
     const [otpValue, setOtpValue] = useState("");
 
@@ -17,18 +19,28 @@ export default function UserProfile() {
             message.success("OTP verified! ✅");
             setOtpModalOpen(false);
             setOtpValue("");
-            // TODO: gửi OTP xuống backend để verify
+            // TODO: Gửi OTP xuống backend để thực hiện đổi mật khẩu
         } else {
             message.error("Please enter 6 digits OTP!");
         }
     };
 
+    // Định nghĩa nội dung các Tabs
     const profileTab = (
-        <UserProfileTab errors={errors} setErrors={setErrors} key={2} />
-    )
+        <UserProfileTab errors={errors} setErrors={setErrors} key="profile-content" />
+    );
 
     const securityTab = (
-        <SecurityTab errorPass={errorPass} setErrorPass={setErrorPass} setOtpModalOpen={setOtpModalOpen} key={1} />
+        <SecurityTab 
+            errorPass={errorPass} 
+            setErrorPass={setErrorPass} 
+            setOtpModalOpen={setOtpModalOpen} 
+            key="security-content" 
+        />
+    );
+
+    const addressTab = (
+        <AddressTab key="address-content" />
     );
 
     return (
@@ -57,26 +69,40 @@ export default function UserProfile() {
                             ),
                             children: securityTab,
                         },
+                        {
+                            key: "3",
+                            label: (
+                                <span>
+                                    <EnvironmentOutlined /> Address
+                                </span>
+                            ),
+                            children: addressTab,
+                        },
                     ]}
                     rootClassName="custom-tabs"
                 />
             </div>
 
-            {/* OTP Modal */}
+            {/* OTP Modal (Dùng chung cho logic bảo mật) */}
             <Modal
                 title="Enter OTP"
                 open={otpModalOpen}
                 onOk={handleOtpSubmit}
                 onCancel={() => setOtpModalOpen(false)}
                 okText="Verify"
+                centered
             >
-                <p className="mb-4">Please enter the 6-digit OTP sent to your email.</p>
-                <Input.OTP
-                    length={6}
-                    value={otpValue}
-                    onChange={(val) => setOtpValue(val)}
-                    size="large"
-                />
+                <div className="text-center py-4">
+                    <p className="mb-4 text-gray-600 dark:text-gray-300">
+                        Please enter the 6-digit OTP sent to your email to confirm password changes.
+                    </p>
+                    <Input.OTP
+                        length={6}
+                        value={otpValue}
+                        onChange={(val) => setOtpValue(val)}
+                        size="large"
+                    />
+                </div>
             </Modal>
         </div>
     );

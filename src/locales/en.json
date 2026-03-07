@@ -1,5 +1,5 @@
 {
-        "translation" : "",
+        "translation": "",
         "header": {
                 "home": "Home",
                 "shop": "Shop",
@@ -38,5 +38,19 @@
                 "woman": "Woman",
                 "boy": "Boy",
                 "child": "Child"
+        },
+        "map": {
+                "title": "Our Store Location",
+                "storeName": "GenZStyle Store",
+                "description": "Visit our store to experience the latest fashion shoe collections for young people.",
+                "address": "828 Su Van Hanh, Ward 12, District 10, Ho Chi Minh City, Vietnam",
+                "openingHours": "09:00 – 22:00 (Daily)",
+                "hotline": "0900 123 456",
+                "viewOnMap": "View on Google Maps",
+                "labels": {
+                        "address": "Address",
+                        "openingHours": "Opening Hours",
+                        "hotline": "Hotline"
+                }
         }
 }

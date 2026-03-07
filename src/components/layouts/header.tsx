@@ -10,6 +10,8 @@ import { useTranslation } from "react-i18next";
 import LanguageSwitch from "../languageSwitch";
 import { useAuth } from "../../hooks/useAuth";
 import { FaUserCircle } from "react-icons/fa";
+import useSearchQuery from "../../hooks/useSearchQuery";
+
 
 export function HeaderCustom() {
     const [searchShow, setSearchShow] = useState(false);
@@ -22,6 +24,11 @@ export function HeaderCustom() {
     const logoutFun = async () =>{
         await logout();
     }
+    const [search] = useSearchQuery();
+    // const handleSearch = () => {
+
+    // }
+
     const { isAuthenticated, logout} = useAuth();
     const { t } = useTranslation("header");
     return (
@@ -50,7 +57,13 @@ export function HeaderCustom() {
             </div>
             {searchShow && (
                 <div className={`Layout__Header--search ${searchShow ? "open" : ""} absolute top-0 left-0 w-full h-[200px] z-20 backdrop-filter backdrop-blur-sm bg-opacity-70 border border-gray-100 bg-gray-300 flex justify-center items-center`}>
-                    <input className="search-input w-[70%] h-[50px] rounded-[30px] border border-[var(--border)] m-auto pl-[15px] " type="text" placeholder={t("search")} />
+                    <input defaultValue={search} onKeyDown={e => {
+                        if(e.key==="Enter"){
+                            // setSearch((e.target as HTMLInputElement).value)
+                            onNavigate("shop?q="+(e.target as HTMLInputElement).value )
+                        }
+
+                    }} className="search-input w-[70%] h-[50px] rounded-[30px] border border-[var(--border)] m-auto pl-[15px] " type="text" placeholder={t("search")} />
                     <button onClick={() => setSearchShow(false)} className="closeButton absolute right-[30px] top-[30px]"><IoCloseOutline className=" h-[32px] w-[32px]" /></button>
                 </div>
             )}

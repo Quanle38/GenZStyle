@@ -32,6 +32,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     fetchMe();
   }, [accessToken, dispatch]);
+  
+  useEffect(() => {
+    const onTokenRefresh = () => {
+      setAccessTokenState(getToken())
+    }
+    window.addEventListener("auth:token-refresh",onTokenRefresh);
+    return () => {
+      window.removeEventListener("auth:token-refresh",onTokenRefresh);
+    }
+  },[])
 
   const setAccessToken = (token: string | null) => {
     setAccessTokenState(token);
@@ -53,7 +63,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     () => ({
       accessToken,
       setAccessToken,
-      isAuthenticated: !!accessToken,
+      isAuthenticated: !!getToken(),
       userInfo,
       logout,
     }),

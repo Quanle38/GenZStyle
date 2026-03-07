@@ -72,30 +72,38 @@ export function UserProfileTab({ errors, setErrors }: IUserProfileTab) {
     }, [user]);
 
     const { notify } = useNotificationContext();
-    // ===== SAVE USER =====
+
+    //Save User
     const saveUser = async () => {
-        if (!user) return;
+  if (!user) return;
 
-        const payload: UpdateRequestBodyUser = {
-            first_name: editAbleForm.first_name,
-            last_name: editAbleForm.last_name,
-            dob: new Date(editAbleForm.birthday),
-            phone_number: editAbleForm.phone,
-            gender: editAbleForm.gender,
-        };
-        try {
-            await dispatch(
-                updateUserThunk({
-                    id: user.id,
-                    body: payload,
-                })
-            ).unwrap();
+  const formData = new FormData();
 
-            notify("Updated Successfully");
-        } catch (error: any) {
-            notify("Update Failed");
-        }
-    };
+  formData.append("first_name", editAbleForm.first_name);
+  formData.append("last_name", editAbleForm.last_name);
+  formData.append("dob", new Date(editAbleForm.birthday).toISOString());
+  formData.append("phone_number", editAbleForm.phone);
+  formData.append("gender", editAbleForm.gender);
+
+  // 👇 QUAN TRỌNG: file PHẢI là File
+  if (editAbleForm.avatar instanceof File) {
+    formData.append("file", editAbleForm.avatar);
+  }
+
+  try {
+    await dispatch(
+      updateUserThunk({
+        id: user.id,
+        body: formData,
+      })
+    ).unwrap();
+
+    notify("Updated Successfully");
+  } catch (error: any) {
+    notify("Update Failed");
+  }
+};
+
 
 
     const today = new Date();

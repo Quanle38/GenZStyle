@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { AuthData, LoginRequest, UserData } from "./authTypes";
 import { authAPI } from "./authAPI";
-import { removeToken, setRefreshToken, setToken } from "../../utils/cookie";
+import { removeToken, setToken } from "../../utils/cookie";
 import { extractErrorMessage } from "../../utils/extractErrorMessage";
 
 
@@ -178,10 +178,9 @@ const authSlice = createSlice({
                 state.isLoading = true;
                 state.error = null;
             })
-            .addCase(reFreshThunk.fulfilled, (state, action) => {
+            .addCase(reFreshThunk.fulfilled, (state) => {
                 state.isLoading = false;
                 state.error = null;
-                setRefreshToken(action.payload)
             })
             .addCase(reFreshThunk.rejected, (state, action) => {
                 state.isLoading = false;

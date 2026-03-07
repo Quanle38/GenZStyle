@@ -1,201 +1,256 @@
-import  { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import type { RootState } from "../app/store";
+import {
+  getCartThunk,
+  removeCartItemThunk,
+  updateCartItemThunk,
+} from "../features/cart/cartSlice";
+import type { CartItem, RequestUpdateCartItem } from "../features/cart/cartTypes";
+import priceFormat from "../utils/priceFormat";
+import { RiDeleteBin7Fill } from "react-icons/ri";
+import { setLocal } from "../utils/localStorage";
 
-interface CartItem {
-    id: number;
-    name: string;
-    size: string;
-    price: number;
-    image: string;
-    quantity: number;
-}
-
-const products: CartItem[] = [
-    {
-        id: 1,
-        name: "Nike Air Max 2019",
-        size: "36EU - 4US",
-        price: 1259,
-        image:
-            "https://images.unsplash.com/photo-1588484628369-dd7a85bfdc38?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=60",
-        quantity: 1,
-    },
-    {
-        id: 2,
-        name: "Nike Air Max 2019",
-        size: "36EU - 4US",
-        price: 1259,
-        image:
-            "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=60",
-        quantity: 1,
-    },
-    {
-        id: 3,
-        name: "Nike Air Max 2019",
-        size: "36EU - 4US",
-        price: 1259,
-        image:
-            "https://images.unsplash.com/photo-1588484628369-dd7a85bfdc38?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=60",
-        quantity: 1,
-    },
-];
- 
 export default function Cart() {
-    const navigate = useNavigate();
-    const [productList, setProductList] = useState<CartItem[]>(products);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { cart, isLoading } = useAppSelector((state: RootState) => state.cart);
 
-    const subtotal = productList.reduce(
-        (acc, item) => acc + item.price * item.quantity,
-        0
+  const items = cart?.items ?? [];
+
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<CartItem | null>(null);
+
+  const [selectedColor, setSelectedColor] = useState<string>("");
+  const [selectedSize, setSelectedSize] = useState<number | null>(null);
+  const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
+
+  useEffect(() => {
+    dispatch(getCartThunk());
+  }, [dispatch]);
+
+  const total = useMemo(() => {
+    return items.reduce((acc, i) => acc + Number(i.variant.price) * i.quantity, 0);
+  }, [items]);
+
+  const openEditModal = (item: CartItem) => {
+    setSelectedItem(item);
+    setSelectedColor(item.variant.color);
+    setSelectedSize(item.variant.size);
+    setSelectedQuantity(item.quantity);
+    setOpenModal(true);
+  };
+
+  const colors = useMemo(() => {
+    if (!selectedItem) return [];
+    return Array.from(new Set(selectedItem.variants.map((v) => v.color)));
+  }, [selectedItem]);
+
+  const sizes = useMemo(() => {
+    if (!selectedItem || !selectedColor) return [];
+    return selectedItem.variants.filter((v) => v.color === selectedColor);
+  }, [selectedItem, selectedColor]);
+
+  const selectedVariant = useMemo(() => {
+    if (!selectedItem || !selectedColor || !selectedSize) return null;
+    return selectedItem.variants.find(
+      (v) => v.color === selectedColor && v.size === selectedSize
     );
-    const shipping = 8;
-    const total = subtotal + shipping;
+  }, [selectedItem, selectedColor, selectedSize]);
 
-    const removeItem = (id: number) => {
-        setProductList(productList.filter((item) => item.id !== id));
+  const handleConfirm = async () => {
+    if (!selectedItem || !selectedVariant) return;
+
+    const body: RequestUpdateCartItem = {
+      variantId: selectedVariant.id,
+      quantity: selectedQuantity,
     };
 
-    return (
-        <div className="h-screen bg-gray-100 py-12 sm:py-16 lg:py-20">
-            <div className="mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-center">
-                    <h1 className="text-2xl font-semibold text-gray-900">Your Cart</h1>
-                </div>
+    try {
+      await dispatch(
+        updateCartItemThunk({
+          cartItemId: Number(selectedItem.id),
+          body,
+        })
+      ).unwrap();
+      await dispatch(getCartThunk());
+      setOpenModal(false);
+    } catch (error) {
+      console.error("Update failed:", error);
+    }
+  };
 
-                <div className="mx-auto mt-2 max-w-md md:mt-4">
-                    <div className="rounded-3xl bg-white shadow-lg">
-                        <div className="px-4 py-6 sm:px-8 sm:py-10">
-                            {/* Check nếu rỗng */}
-                            {productList.length === 0 ? (
-                                <div className="text-center py-10">
-                                    <p className="text-lg font-semibold text-gray-700">
-                                        Your cart is empty 🛒
-                                    </p>
-                                    <p className="mt-2 text-sm text-gray-500">
-                                        Add some products to see them here.
-                                    </p>
-                                    <button onClick={() => navigate("/shop") }>Continue to Shopping</button>
-                                </div>
-                            ) : (
-                                <>
-                                    <div className="flow-root">
-                                        <ul className="-my-8">
-                                            {productList.map((item) => (
-                                                <li
-                                                    key={item.id}
-                                                    className="flex flex-col space-y-3 py-6 text-left sm:flex-row sm:space-x-5 sm:space-y-0"
-                                                >
-                                                    <div className="shrink-0 relative">
-                                                        <span className="absolute top-1 left-1 flex h-6 w-6 items-center justify-center rounded-full border bg-white text-sm font-medium text-gray-500 shadow sm:-top-2 sm:-right-2">
-                                                            {item.quantity}
-                                                        </span>
-                                                        <img
-                                                            className="h-24 w-24 max-w-full rounded-lg object-cover"
-                                                            src={item.image}
-                                                            alt={item.name}
-                                                        />
-                                                    </div>
+  const handlePay = () => {
+    setLocal("cartId")
+    navigate("/payment");
+  }
 
-                                                    <div className="relative flex flex-1 flex-col justify-between">
-                                                        <div className="sm:col-gap-5 sm:grid sm:grid-cols-2">
-                                                            <div className="pr-8 sm:pr-5">
-                                                                <p className="text-base font-semibold text-gray-900">
-                                                                    {item.name}
-                                                                </p>
-                                                                <p className="mx-0 mt-1 mb-0 text-sm text-gray-400">
-                                                                    {item.size}
-                                                                </p>
-                                                            </div>
+  const handleDelete = async (id: number) => {
+    setDeletingId(id);
+    try {
+      await dispatch(removeCartItemThunk(id)).unwrap();
+      await dispatch(getCartThunk()); // 👈 BẮT BUỘC
+    } catch (error) {
+      console.error("Delete failed:", error);
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
-                                                            <div className="mt-4 flex items-end justify-between sm:mt-0 sm:items-start sm:justify-end">
-                                                                <p className="shrink-0 w-20 text-base font-semibold text-gray-900 sm:order-2 sm:ml-8 sm:text-right">
-                                                                    ${item.price.toFixed(2)}
-                                                                </p>
-                                                            </div>
-                                                        </div>
 
-                                                        <div className="absolute top-0 right-0 flex sm:bottom-0 sm:top-auto">
-                                                            <button
-                                                                onClick={() => removeItem(item.id)}
-                                                                type="button"
-                                                                className="flex rounded p-2 text-center text-gray-500 transition-all duration-200 ease-in-out focus:shadow hover:text-gray-900"
-                                                            >
-                                                                <svg
-                                                                    className="h-5 w-5"
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    fill="none"
-                                                                    viewBox="0 0 24 24"
-                                                                    stroke="currentColor"
-                                                                >
-                                                                    <path
-                                                                        strokeLinecap="round"
-                                                                        strokeLinejoin="round"
-                                                                        strokeWidth={2}
-                                                                        d="M6 18L18 6M6 6l12 12"
-                                                                    />
-                                                                </svg>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
+  return (
+    <div className="min-h-screen bg-gray-100 py-12">
+      <div className="mx-auto max-w-3xl px-4">
+        <h1 className="text-center text-2xl font-semibold">Your Cart</h1>
 
-                                    {/* Subtotal & total */}
-                                    <div className="mt-6 space-y-3 border-t border-b py-8">
-                                        <div className="flex items-center justify-between">
-                                            <p className="text-gray-400">Subtotal</p>
-                                            <p className="text-lg font-semibold text-gray-900">
-                                                ${subtotal.toFixed(2)}
-                                            </p>
-                                        </div>
-                                        <div className="flex items-center justify-between">
-                                            <p className="text-gray-400">Shipping</p>
-                                            <p className="text-lg font-semibold text-gray-900">
-                                                ${shipping.toFixed(2)}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-6 flex items-center justify-between">
-                                        <p className="text-sm font-medium text-gray-900">Total</p>
-                                        <p className="text-2xl font-semibold text-gray-900">
-                                            <span className="text-xs font-normal text-gray-400">
-                                                USD
-                                            </span>{" "}
-                                            {total.toFixed(2)}
-                                        </p>
-                                    </div>
-
-                                    <div className="mt-6 text-center">
-                                        <button
-                                            type="button"
-                                            className="group inline-flex w-full items-center justify-center rounded-md bg-orange-500 px-6 py-4 text-lg font-semibold text-white transition-all duration-200 ease-in-out focus:shadow hover:bg-gray-800"
-                                        >
-                                            Place Order
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                className="group-hover:ml-8 ml-4 h-6 w-6 transition-all"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                                strokeWidth={2}
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="M13 7l5 5m0 0l-5 5m5-5H6"
-                                                />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                    </div>
-                </div>
+        <div className="mt-6 rounded-3xl bg-white shadow p-6">
+          {items.length === 0 && !isLoading ? (
+            <div className="py-10 text-center">
+              <p>Your cart is empty 🛒</p>
+              <button
+                onClick={() => navigate("/shop")}
+                className="mt-4 rounded bg-orange-500 px-4 py-2 text-white"
+              >
+                Continue shopping
+              </button>
             </div>
+          ) : (
+            <>
+              <ul className="-my-6 divide-y">
+                {items.map((item) => (
+                  <li key={item.id} className="flex gap-4 py-6">
+                    <img
+                      src={item.variant.image ?? "/placeholder.png"}
+                      className="h-24 w-24 rounded object-cover"
+                      alt={item.product_name}
+                    />
+
+                    <div className="flex-1">
+                      <p className="font-semibold">{item.product_name}</p>
+                      <p className="text-sm text-gray-500">
+                        {priceFormat(Number(item.variant.price))}
+                      </p>
+
+                      <div className="mt-2 flex items-center gap-4">
+                        <button
+                          onClick={() => openEditModal(item)}
+                          className="rounded border px-3 py-1 text-sm flex items-center gap-2 hover:bg-gray-50"
+                        >
+                          <span
+                            className="inline-block h-4 w-4 rounded-full border"
+                            style={{ backgroundColor: item.variant.color.toLowerCase() }}
+                          />
+                          Size {item.variant.size}
+                        </button>
+                        <span className="text-sm text-gray-600">Qty: {item.quantity}</span>
+                      </div>
+                    </div>
+
+                    <button
+                      disabled={deletingId === Number(item.id)}
+                      onClick={() => handleDelete(Number(item.id))}
+                      className="text-gray-400 hover:text-red-500 disabled:opacity-40 self-start p-2"
+                    >
+                      <RiDeleteBin7Fill size={22} />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-6 border-t pt-6 flex justify-between font-semibold text-lg">
+                <span>Total</span>
+                <span className="text-back-600">{priceFormat(total)}</span>
+              </div>
+
+              <button onClick={() => handlePay()} className="mt-6 w-full rounded-xl bg-black py-3 text-lg font-bold text-white hover:bg-[var(--banner-price)] transition-colors">
+                Place Order
+              </button>
+            </>
+          )}
         </div>
-    );
+      </div>
+
+      {/* MODAL CẬP NHẬT */}
+      {openModal && selectedItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="w-96 rounded-2xl bg-white p-6 shadow-xl">
+            <h2 className="mb-4 text-xl font-bold">Update Item</h2>
+
+            <p className="mb-2 text-sm font-medium text-gray-700">Color</p>
+            <div className="flex gap-3 mb-4">
+              {colors.map((c) => (
+                <button
+                  key={c}
+                  onClick={() => {
+                    setSelectedColor(c);
+                    setSelectedSize(null);
+                  }}
+                  className={`h-9 w-9 rounded-full border-2 transition-all ${selectedColor === c ? "border-orange-500 scale-110" : "border-transparent"
+                    }`}
+                  style={{ backgroundColor: c.toLowerCase() }}
+                />
+              ))}
+            </div>
+
+            <p className="mb-2 text-sm font-medium text-gray-700">Size</p>
+            <div className="grid grid-cols-3 gap-2 mb-4">
+              {sizes
+                .slice()
+                .sort((a, b) => a.size - b.size)
+                .map((v) => (
+                  <button
+                    key={v.id}
+                    disabled={v.stock === 0}
+                    onClick={() => setSelectedSize(v.size)}
+                    className={`rounded-lg border py-2 text-sm font-medium transition-colors ${selectedSize === v.size
+                      ? "border-orange-500 bg-orange-50 text-orange-600"
+                      : "hover:bg-gray-50"
+                      } disabled:opacity-30`}
+                  >
+                    {v.size}
+                  </button>
+                ))}
+            </div>
+
+            <div className="flex items-center justify-between mb-8">
+              <span className="text-sm font-medium text-gray-700">Quantity</span>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setSelectedQuantity((q) => Math.max(1, q - 1))}
+                  className="h-8 w-8 rounded-full border flex items-center justify-center hover:bg-gray-100"
+                >
+                  −
+                </button>
+                <span className="w-4 text-center font-bold">{selectedQuantity}</span>
+                <button
+                  onClick={() => setSelectedQuantity((q) => q + 1)}
+                  className="h-8 w-8 rounded-full border flex items-center justify-center hover:bg-gray-100"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setOpenModal(false)}
+                className="flex-1 rounded-xl border py-2 font-medium hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirm}
+                disabled={!selectedVariant || isLoading}
+                className="flex-1 rounded-xl bg-orange-500 py-2 font-medium text-white disabled:opacity-50 hover:bg-orange-600"
+              >
+                {isLoading ? "Updating..." : "Confirm"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
