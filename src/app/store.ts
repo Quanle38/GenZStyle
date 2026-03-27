@@ -5,6 +5,9 @@ import cartReducer from '../features/cart/cartSlice'
 import productReducer from '../features/product/productSlice'
 import couponReducer from '../features/coupon/couponSlice'
 import addressReducer from '../features/address/addressSlice'
+import orderReducer from '../features/order/orderSlice'
+import conditionSetReducer from '../features/conditionSet/conditionSetSlice'
+
 
 
 export const store = configureStore({
@@ -15,7 +18,8 @@ export const store = configureStore({
     product: productReducer,
     coupon: couponReducer,
     address: addressReducer,
-
+    order:   orderReducer,
+    condition : conditionSetReducer
   },
 })
 

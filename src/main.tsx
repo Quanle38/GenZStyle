@@ -6,15 +6,25 @@ import App from "./App.tsx";
 import "./i18n.ts";
 import { store } from "./app/store";
 import { AuthProvider } from "./contexts/authContext";
-import { NotificationProvider } from "./contexts/notificationContext.tsx";
+import { Toaster } from "react-hot-toast";
+
 
 
 createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
     <AuthProvider>
-      <NotificationProvider>
       <App />
-      </NotificationProvider>
+      <Toaster
+          position="bottom-right"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: "#140f2a",
+              color: "#fff",
+              border: "1px solid rgba(255,255,255,0.1)"
+            }
+          }}
+        />
     </AuthProvider>
   </Provider>
 );

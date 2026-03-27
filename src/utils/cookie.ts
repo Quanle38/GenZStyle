@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 
-const ACCESS_TOKEN_EXPIRES = 15 / 1440; // 15 phút
+const ACCESS_TOKEN_EXPIRES =  7 
 
 
 export const setCookie = (name: string, value: string, expires: number) => {

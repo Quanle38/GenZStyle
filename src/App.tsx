@@ -9,11 +9,14 @@ import Cart from './pages/cart'
 import ProductPage from './pages/detail'
 import ProtectedRoute from './routes/protectedRoute'
 import PaymentPage from './pages/payment'
-import { AccountManagement } from './components/accountManagement'
+import AccountManagement from './components/accountManagement'
 import OrderHistoryPage from './pages/orderHistory'
 import CouponManagement from './components/couponManagement'
 import AdminLayout from './components/layouts/adminLayout'
 import OverViewPage from './pages/overView'
+import OrderManagement from './components/orderManagement'
+import ConditionSetManagement from './components/conditionSetManagement'
+import ProductManagement from './components/productManagement'
 
 
 function App() {
@@ -36,9 +39,15 @@ function App() {
 
           
           <Route path='/admin' element={<AdminLayout />}>
-           <Route path="overview" element={<OverViewPage/>} />
+          <Route path="overview" element={<OverViewPage/>} />
           <Route path="coupon" element={<CouponManagement/>} />
           <Route path="account" element={<AccountManagement/>} />
+          <Route path="order" element={<OrderManagement/>} />
+          <Route path="condition" element={<ConditionSetManagement/>} />
+          <Route path="product" element={<ProductManagement/>} />
+
+
+
           </Route>
 
           

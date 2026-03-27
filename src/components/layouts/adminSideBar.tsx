@@ -1,87 +1,96 @@
 import {
-    AppstoreOutlined,
-    CreditCardOutlined,
-    LogoutOutlined,
-    SafetyCertificateOutlined,
-    SettingOutlined,
-    ShoppingCartOutlined,
-    SkinOutlined,
-    TagsOutlined,
-    ToolOutlined,
-    UserOutlined,
-    DashboardOutlined
-} from "@ant-design/icons";
-import { Menu, type MenuProps } from 'antd';
-import Sider from 'antd/es/layout/Sider';
-import { useNavigate } from 'react-router-dom';
+    MdDashboard,
+    MdStore,
+    MdPerson,
+    MdDiscount,
+    MdShoppingCart,
+    MdInventory,
+    MdPayment,
+    MdSettings,
+    MdSecurity,
+    MdBuild,
+    MdLogout
+} from "react-icons/md";
+
+import { Menu, type MenuProps } from "antd";
+import Sider from "antd/es/layout/Sider";
+import { useNavigate } from "react-router-dom";
+import { RiCouponFill } from "react-icons/ri";
 
 interface IAdminSideBarProp {
-    collapsed : boolean
+    collapsed: boolean;
 }
 
-export default function AdminSideBar({collapsed} : IAdminSideBarProp) {
+export default function AdminSideBar({ collapsed }: IAdminSideBarProp) {
 
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
+
     const menuItems: MenuProps["items"] = [
         {
             key: "overview",
-            icon: <DashboardOutlined />,
+            icon: <MdDashboard size={18} />,
             label: "Overview",
             onClick: () => navigate("/admin"),
         },
         {
             key: "management",
-            icon: <AppstoreOutlined />,
+            icon: <MdStore size={18} />,
             label: "Management",
             children: [
                 {
                     key: "account",
-                    icon: <UserOutlined />,
+                    icon: <MdPerson size={18} />,
                     label: "Account",
-                    onClick: () => navigate("/admin/account")
+                    onClick: () => navigate("/admin/account"),
                 },
                 {
                     key: "coupon",
-                    icon: <TagsOutlined />,
+                    icon: <MdDiscount size={18} />,
                     label: "Coupon",
-                    onClick: () => navigate("/admin/coupon")
+                    onClick: () => navigate("/admin/coupon"),
+                },
+                {
+                    key: "condition",
+                    icon: <RiCouponFill  size={18} />,
+                    label: "ConditionSet",
+                    onClick: () => navigate("/admin/condition"),
                 },
                 {
                     key: "order",
-                    icon: <ShoppingCartOutlined />,
+                    icon: <MdShoppingCart size={18} />,
                     label: "Order",
-                    onClick: () => navigate("/admin/order")
+                    onClick: () => navigate("/admin/order"),
                 },
                 {
                     key: "product",
-                    icon: <SkinOutlined />,
+                    icon: <MdInventory size={18} />,
                     label: "Product",
-                    onClick: () => navigate("/admin/product")
+                    onClick: () => navigate("/admin/product"),
                 },
                 {
                     key: "payment",
-                    icon: <CreditCardOutlined />,
+                    icon: <MdPayment size={18} />,
                     label: "Payment",
-                    onClick: () => navigate("/admin/payment")
+                    onClick: () => navigate("/admin/payment"),
                 },
             ],
         },
         {
             key: "configuration",
-            icon: <SettingOutlined />,
+            icon: <MdSettings size={18} />,
             label: "Configuration",
             children: [
                 {
                     key: "system",
-                    icon: <ToolOutlined />,
+                    icon: <MdBuild size={18} />,
                     label: "System Setup",
-                    onClick: () => navigate("/admin/system")
+                    onClick: () => navigate("/admin/system"),
                 },
                 {
                     key: "security",
-                    icon: <SafetyCertificateOutlined />,
+                    icon: <MdSecurity size={18} />,
                     label: "Security",
-                    onClick: () => navigate("/admin/security")
+                    onClick: () => navigate("/admin/security"),
                 },
             ],
         },
@@ -91,12 +100,13 @@ export default function AdminSideBar({collapsed} : IAdminSideBarProp) {
         },
         {
             key: "logout",
-            icon: <LogoutOutlined />,
+            icon: <MdLogout size={18} />,
             label: "Logout",
             className: "text-red-500 hover:text-red-600",
-            onClick: () => navigate("/login")
+            onClick: () => navigate("/login"),
         },
     ];
+
     return (
         <Sider
             trigger={null}
@@ -107,7 +117,10 @@ export default function AdminSideBar({collapsed} : IAdminSideBarProp) {
             width={260}
         >
             <div className="p-8 flex items-center justify-center border-b border-gray-50">
-                <h1 className={`font-black text-xl tracking-tighter transition-all duration-300 ${collapsed ? "scale-0 w-0" : "scale-100"}`}>
+                <h1
+                    className={`font-black text-xl tracking-tighter transition-all duration-300 ${collapsed ? "scale-0 w-0" : "scale-100"
+                        }`}
+                >
                     GENZ<span className="text-gray-400 font-light">STYLE</span>
                 </h1>
             </div>

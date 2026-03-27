@@ -1,13 +1,5 @@
-/* =========================
-   CONDITION
-========================= */
-
-export type CouponConditionType =
-  | "MIN_ORDER_VALUE"
-  | "TIER"
-  | "NEW_USER"
-  | "DAY_OF_WEEK"
-  | "HOUR_OF_DAY";
+export type CouponConditionType = "MIN_ORDER_VALUE" | "TIER" | "NEW_USER" | "DAY_OF_WEEK" | "HOUR_OF_DAY";
+export type CouponType = "PERCENT" | "FIXED";
 
 export interface ConditionDetail {
   condition_detail_id: number;
@@ -26,12 +18,6 @@ export interface ConditionSet {
   details: ConditionDetail[];
 }
 
-/* =========================
-   COUPON
-========================= */
-
-export type CouponType = "PERCENT" | "FIXED";
-
 export interface Coupon {
   id: string;
   code: string;
@@ -40,51 +26,32 @@ export interface Coupon {
   type: CouponType;
   usage_limit: number;
   used_count: number;
-  value: string;
-  max_discount: string | null;
+  value: number; // Đổi sang number để tính toán
+  max_discount: number | null;
   condition_set_id: string;
   is_deleted: boolean;
   created_at: string;
   updated_at: string;
-  conditionSet: ConditionSet;
+  conditionSet?: ConditionSet; // BE có include
 }
 
-/* =========================
-   API RESPONSES
-========================= */
-
-// GET /coupon/by-code
-export interface GetCouponByCodeResponse {
-  success: boolean;
-  data: Coupon;
-}
-
-// GET /coupon/get-all-by-user-id
 export interface CouponWithValid extends Coupon {
   is_valid: boolean;
 }
 
-export interface GetAllCouponByUserResponse {
-  success: boolean;
-  data: CouponWithValid[];
-}
-
-// POST /coupon/apply
+/* API REQUESTS & RESPONSES */
 export interface ApplyCouponRequest {
   code: string;
-  cartInfo: {
-    subtotal: number;
-    productIds: string[];
-  };
 }
 
 export interface ApplyCouponResponse {
   success: boolean;
-  discount: number;
-  coupon: string;
+  data: {
+    discountAmount: number;
+    couponCode: string;
+  };
 }
 
-// POST /coupon/create
 export interface CreateCouponRequest {
   code: string;
   type: CouponType;
@@ -93,18 +60,13 @@ export interface CreateCouponRequest {
   end_time: string;
   usage_limit: number;
   max_discount?: number | null;
+  condition_set_id?: string | null;
   conditions?: {
     condition_type: CouponConditionType;
     condition_value: string;
   }[];
 }
 
-export interface CreateCouponResponse {
-  success: boolean;
-  data: Coupon;
-}
-
-// GET /coupon (ADMIN)
 export interface GetAllCouponResponse {
   success: boolean;
   data: Coupon[];
@@ -113,4 +75,18 @@ export interface GetAllCouponResponse {
     page: number;
     limit: number;
   };
+}
+export interface GetCouponByCodeResponse {
+  success: boolean;
+  data: Coupon;
+}
+
+export interface GetAllCouponByUserResponse {
+  success: boolean;
+  data: CouponWithValid[];
+}
+
+export interface CreateCouponResponse {
+  success: boolean;
+  data: Coupon;
 }
