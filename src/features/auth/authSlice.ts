@@ -10,12 +10,14 @@ interface AuthState {
     user: UserData | null;
     isLoading: boolean;
     error: string | null;
+    isInitialized: boolean;
 }
 
 const initialState: AuthState = {
     user: null,
     isLoading: false,
-    error: null
+    error: null,
+    isInitialized: false,
 };
 
 
@@ -161,12 +163,13 @@ const authSlice = createSlice({
             })
             .addCase(meThunk.fulfilled, (state, action) => {
                 state.isLoading = false;
+                state.isInitialized = true; // ← đánh dấu đã xong
                 state.user = action.payload;
                 state.error = null;
             })
             .addCase(meThunk.rejected, (state, action) => {
                 state.isLoading = false;
-
+                state.isInitialized = true; // ← dù fail cũng đánh dấu xong
                 if (action.payload) {
                     state.error = (action.payload as { message: string }).message;
                 } else {

@@ -13,10 +13,12 @@ import AccountManagement from './components/accountManagement'
 import OrderHistoryPage from './pages/orderHistory'
 import CouponManagement from './components/couponManagement'
 import AdminLayout from './components/layouts/adminLayout'
-import OverViewPage from './pages/overView'
 import OrderManagement from './components/orderManagement'
 import ConditionSetManagement from './components/conditionSetManagement'
 import ProductManagement from './components/productManagement'
+import SuccessPage from './pages/successPage'
+import QRPage from './pages/QRpage'
+import OverviewPage from './pages/OverviewPage'
 
 
 function App() {
@@ -35,26 +37,25 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/product/:id" element={<ProductPage />} />
-          <Route path="/history" element={<OrderHistoryPage/>} />
 
-          
+
           <Route path='/admin' element={<AdminLayout />}>
-          <Route path="overview" element={<OverViewPage/>} />
-          <Route path="coupon" element={<CouponManagement/>} />
-          <Route path="account" element={<AccountManagement/>} />
-          <Route path="order" element={<OrderManagement/>} />
-          <Route path="condition" element={<ConditionSetManagement/>} />
-          <Route path="product" element={<ProductManagement/>} />
-
-
-
+            <Route path="overview" element={<OverviewPage />} />
+            <Route path="coupon" element={<CouponManagement />} />
+            <Route path="account" element={<AccountManagement />} />
+            <Route path="order" element={<OrderManagement />} />
+            <Route path="condition" element={<ConditionSetManagement />} />
+            <Route path="product" element={<ProductManagement />} />
           </Route>
 
-          
-          <Route element={<ProtectedRoute/>}>
-          <Route path="/profile" element={<UserProfile />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/payment" element={<PaymentPage />} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route path="/profile" element={<UserProfile />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/payment" element={<PaymentPage />} />
+            <Route path="/history" element={<OrderHistoryPage />} />
+          <Route path="/payment/qr" element={<QRPage />} />
+          <Route path="/payment/success" element={<SuccessPage />} />
 
           </Route>
         </Routes>

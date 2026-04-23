@@ -13,11 +13,18 @@ export type CartResponse = {
    CART
 ======================= */
 export type Cart = {
-    id: number;
-    user_id: string;
-    amount: number;
-    total_price: string;
+    id: string;                     // "C002"
+    user_id: string;                // "U002"
+    amount: number;                 // 1
+    total_price: number;            // 2800000
+
     items: CartItem[];
+
+    // thêm mới:
+    cartCoupons: CartCoupon[];      // danh sách coupon đang áp dụng vào cart
+    discount_amount: number;        // 60000
+    total_after_discount: number;   // 2740000
+    coupon_details: CouponDetail[]; // [{ code, type, discount }]
 };
 
 /* =======================
@@ -80,4 +87,29 @@ export type UpdateCartItemResponse = {
     success: boolean;
     message: string;
     data: Cart;
+};
+
+
+export type CouponDetail = {
+    code: string;
+    type: "PERCENT" | "FIXED";
+    discount: number;
+};
+
+export type Coupon = {
+    id: string;
+    code: string;
+    type: "PERCENT" | "FIXED";
+    value: string;
+    max_discount: string | null;
+    start_time: string;
+    end_time: string;
+};
+
+export type CartCoupon = {
+    id: number;
+    cart_id: string;
+    coupon_id: string;
+    applied_at: string;
+    coupon: Coupon;
 };

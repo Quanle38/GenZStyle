@@ -341,9 +341,7 @@ const FormModal: React.FC<FormModalProps> = ({
   const handleSubmit = () => {
     if (!validate()) return;
     const payload: CreateCouponRequest = {
-      ...(mode === "create" && {
-        id: crypto.randomUUID(),
-      }),
+
       code: form.code.toUpperCase().trim(),
       type: form.type,
       value: parseFloat(form.value),

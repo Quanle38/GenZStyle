@@ -7,14 +7,14 @@ import "./i18n.ts";
 import { store } from "./app/store";
 import { AuthProvider } from "./contexts/authContext";
 import { Toaster } from "react-hot-toast";
-
-
+import { NotificationProvider } from "./contexts/notificationContext";
 
 createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
     <AuthProvider>
-      <App />
-      <Toaster
+      <NotificationProvider>
+        <App />
+        <Toaster
           position="bottom-right"
           toastOptions={{
             duration: 4000,
@@ -25,6 +25,7 @@ createRoot(document.getElementById("root")!).render(
             }
           }}
         />
+      </NotificationProvider>
     </AuthProvider>
   </Provider>
 );

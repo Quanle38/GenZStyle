@@ -7,6 +7,10 @@ import couponReducer from '../features/coupon/couponSlice'
 import addressReducer from '../features/address/addressSlice'
 import orderReducer from '../features/order/orderSlice'
 import conditionSetReducer from '../features/conditionSet/conditionSetSlice'
+import cartCouponReducer from "../features/cartCoupon/cartCouponSlice"
+import historyReducer from "../features/history/historySlice"
+import paymentReducer from "../features/payment/paymentSlice"
+import reportReducer from "../features/report/reportSlice";
 
 
 
@@ -19,7 +23,11 @@ export const store = configureStore({
     coupon: couponReducer,
     address: addressReducer,
     order:   orderReducer,
-    condition : conditionSetReducer
+    condition : conditionSetReducer,
+    cartCoupon : cartCouponReducer,
+    history : historyReducer,
+    payment: paymentReducer,
+    report: reportReducer,
   },
 })
 

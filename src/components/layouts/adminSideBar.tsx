@@ -30,7 +30,7 @@ export default function AdminSideBar({ collapsed }: IAdminSideBarProp) {
             key: "overview",
             icon: <MdDashboard size={18} />,
             label: "Overview",
-            onClick: () => navigate("/admin"),
+            onClick: () => navigate("/admin/overview"),
         },
         {
             key: "management",

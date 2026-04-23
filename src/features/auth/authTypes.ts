@@ -22,11 +22,11 @@ export interface UserData {
 export type Gender = "MALE" | "FEMALE";
 
 export type Membership =
-  | "BRONZE"
-  | "SILVER"
-  | "GOLD"
-  | "PLATINUM"
-  | "VIP";
+    | "BRONZE"
+    | "SILVER"
+    | "GOLD"
+    | "PLATINUM"
+    | "VIP";
 
 
 export interface AuthData {
@@ -39,24 +39,25 @@ export interface RefreshResponse {
 }
 
 export interface DataResponse<T> {
+    success: boolean;
     message: string;
     data: T;
 }
 
 
 export interface RegisterRequestBody {
-  first_name: string;
-  last_name: string;
-  email: string;
-  password: string;
-  phone_number: string;
-  birthday: string;
-  gender: string;
-  address: string;
-  file? : string;  
+    first_name: string;
+    last_name: string;
+    email: string;
+    password: string;
+    phone_number: string;
+    birthday: string;
+    gender: string;
+    address: string;
+    file?: string;
 }
 
 export interface FailedResponse {
-    success : boolean;
-    error : string;
+    success: boolean;
+    error: string;
 }

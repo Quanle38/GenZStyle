@@ -15,20 +15,6 @@ export default function BestSelling() {
                 <div className="w-[41px] h-[2.5px] bg-[var(--black)]"></div>
             </div>
 
-            <div className="w-full flex justify-center items-center gap-[42px] py-[42px]">
-                <button className="bg-[var(--black)] text-[var(--white)] min-w-[122px] h-[79px] text-[25px] font-medium px-[35px] hover:opacity-[0.5]">
-                    {t("man")}
-                </button>
-                <button className="text-[var(--description)] border-[2px] border-[var(--description)] min-w-[122px] h-[79px] text-[25px] font-medium px-[35px] hover:bg-[var(--description)] hover:text-[var(--white)]">
-                    {t("woman")}
-                </button>
-                <button className="text-[var(--description)] border-[2px] border-[var(--description)] min-w-[122px] h-[79px] text-[25px] font-medium px-[35px] hover:bg-[var(--description)] hover:text-[var(--white)]">
-                    {t("boy")}
-                </button>
-                <button className="text-[var(--description)] border-[2px] border-[var(--description)] min-w-[122px] h-[79px] text-[25px] font-medium px-[35px] hover:bg-[var(--description)] hover:text-[var(--white)]">
-                    {t("child")}
-                </button>
-            </div>
             <div className="w-full h-[900px] ">
                 <BestSellingList productList={sliceData} />
             </div>
