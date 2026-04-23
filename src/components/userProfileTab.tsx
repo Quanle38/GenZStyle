@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 import type { Gender, Membership } from "../features/auth/authTypes";
 import { formatDate } from "../utils/dayFormat";
 import { getUserThunk, updateUserThunk } from "../features/user/userSlice";
-import type { UpdateRequestBodyUser } from "../features/user/userTypes";
 import { useAuth } from "../hooks/useAuth";
 import { useNotificationContext } from "../contexts/notificationContext";
 
