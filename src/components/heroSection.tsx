@@ -9,12 +9,12 @@ export function HeroSection(){
         <p className="Hero__des">{t("description")}</p>
         <button className="Hero__btn">{t("button")}</button>
          <div className="brand">
-                    <img className="brand_logo ebay" src="../../../public/images/ebay.png" />
-                    <img className="brand_logo amazon" src="../../../public/images/amazon.png" />
-                    <img className="brand_logo ajio" src="../../../public/images/AJIO.png" />
-                    <img className="brand_logo ebay" src="../../../public/images/ebay.png" />
-                    <img className="brand_logo amazon" src="../../../public/images/amazon.png" />
-                    <img className="brand_logo ajio" src="../../../public/images/AJIO.png" />
+                    <img className="brand_logo ebay" src="/public/images/ebay.png" />
+                    <img className="brand_logo amazon" src="/public/images/amazon.png" />
+                    <img className="brand_logo ajio" src="/public/images/AJIO.png" />
+                    <img className="brand_logo ebay" src="/public/images/ebay.png" />
+                    <img className="brand_logo amazon" src="/public/images/amazon.png" />
+                    <img className="brand_logo ajio" src="/public/images/AJIO.png" />
                 </div>
         </div>
        
